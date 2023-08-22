@@ -49,8 +49,7 @@ pub opaque type Document {
   Concat(left: Document, right: Document)
   Text(text: String)
   Nest(document: Document, indentation: Int)
-  SoftBreak
-  HardBreak
+  Break
   Group(document: Document)
 }
 
@@ -70,12 +69,8 @@ pub fn nest(document: Document, by indentation: Int) -> Document {
   Nest(document, indentation)
 }
 
-pub fn soft_break() -> Document {
-  SoftBreak
-}
-
-pub fn hard_break() -> Document {
-  HardBreak
+pub fn break() -> Document {
+  Break
 }
 
 pub fn group(document: Document) -> Document {
@@ -90,14 +85,15 @@ pub fn concat_all(documents: List(Document)) -> Document {
 }
 
 pub fn to_string_builder(document: Document, width: Int) -> StringBuilder {
-  [#(0, FlattenDocs, document)]
+  [#(0, Unbroken, document)]
   |> to_simple_document(width, 0, _)
   |> simple_document_to_string_builder()
 }
 
 type Mode {
-  BreakDocs
-  FlattenDocs
+  Broken
+  Unbroken
+  ForcedBroken
 }
 
 fn fits(
@@ -110,17 +106,18 @@ fn fits(
     [] -> True
     [#(_, _, Empty), ..rest] -> fits(width, current_width, rest)
     [#(i, mode, Concat(one, other)), ..rest] ->
-      fits(width, current_width, [#(i, mode, one), #(i, mode, other), ..rest])
+      [#(i, mode, one), #(i, mode, other), ..rest]
+      |> fits(width, current_width, _)
     [#(i, mode, Nest(document, j)), ..rest] ->
-      fits(width, current_width, [#(i + j, mode, document), ..rest])
+      [#(i + j, mode, document), ..rest]
+      |> fits(width, current_width, _)
     [#(_, _, Text(text)), ..rest] ->
       fits(width, current_width - string.length(text), rest)
-    [#(_, FlattenDocs, SoftBreak), ..rest] ->
-      fits(width, current_width - 1, rest)
-    [#(_, BreakDocs, SoftBreak), ..] -> True
-    [#(_, _, HardBreak), ..rest] -> fits(width, width, rest)
+    [#(_, Unbroken, Break), ..rest] -> fits(width, current_width - 1, rest)
+    [#(_, Broken, Break), ..] -> True
     [#(i, _, Group(docs)), ..rest] ->
-      fits(width, current_width, [#(i, FlattenDocs, docs), ..rest])
+      [#(i, Unbroken, docs), ..rest]
+      |> fits(width, current_width, _)
   }
 }
 
@@ -141,21 +138,18 @@ fn to_simple_document(
     [#(_, _, Text(text)), ..rest] ->
       to_simple_document(width, consumed + string.length(text), rest)
       |> SimpleText(text, _)
-    [#(_, FlattenDocs, SoftBreak), ..rest] ->
+    [#(_, Unbroken, Break), ..rest] ->
       to_simple_document(width, consumed + 1, rest)
       |> SimpleText(" ", _)
-    [#(i, BreakDocs, SoftBreak), ..rest] ->
-      to_simple_document(width, i, rest)
-      |> SimpleLine(i, _)
-    [#(i, _, HardBreak), ..rest] ->
+    [#(i, Broken, Break), ..rest] ->
       to_simple_document(width, i, rest)
       |> SimpleLine(i, _)
     [#(i, _, Group(document)), ..rest] -> {
       let fits =
-        fits(width, width - consumed, [#(i, FlattenDocs, document), ..rest])
+        fits(width, width - consumed, [#(i, Unbroken, document), ..rest])
       let mode = case fits {
-        True -> FlattenDocs
-        False -> BreakDocs
+        True -> Unbroken
+        False -> Broken
       }
       io.debug(document)
       io.debug(mode)
