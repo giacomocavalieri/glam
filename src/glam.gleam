@@ -4,49 +4,34 @@ import gleam/string
 import gleam/string_builder.{StringBuilder}
 
 pub fn main() {
-  let join = fn(one, other) {
-    case one, other {
-      Empty, doc | doc, Empty -> doc
-      _, _ -> concat([one, break(), other])
-    }
-  }
-
-  let hard_join = fn(one, other) {
-    case one, other {
-      Empty, doc | doc, Empty -> doc
-      _, _ -> concat([one, line(), other])
-    }
-  }
-
-  let binop = fn(left, op, right) {
-    join(text(left), text(op))
+  let heading =
+    [text("entity"), text("prova"), text("{")]
+    |> join(with: break())
     |> group
-    |> join(text(right))
-    |> nest(by: 2)
+
+  let lollipop =
+    [text("-o"), text("nome")]
+    |> join(with: break())
     |> group
-  }
 
-  let if_then_else = fn(cond, then, else) {
-    let cond = group(nest(join(text("if"), cond), by: 2))
-    let then = group(nest(join(text("then"), then), by: 2))
-    let else = group(nest(join(text("else"), else), by: 2))
-    group(hard_join(hard_join(cond, then), else))
-  }
+  let doc =
+    heading
+    |> append(line())
+    |> append(lollipop)
 
-  let cond = binop("a", "==", "b")
-  let expr1 = binop("a", "<<", "2")
-  let expr2 = binop("a", "+", "b")
-  let doc = if_then_else(cond, expr1, expr2)
+  use size <- list.each([10, 15, 20])
+  io.println(string.repeat("-", size))
 
   doc
-  |> to_string_builder(11)
+  |> format(size)
   |> string_builder.to_string
   |> io.println
+
+  io.println("\n\n")
 }
 
 pub opaque type Document {
-  Empty
-  Line
+  Line(size: Int)
   Concat(docs: List(Document))
   Text(text: String)
   Nest(doc: Document, indentation: Int)
@@ -55,11 +40,15 @@ pub opaque type Document {
 }
 
 pub fn empty() -> Document {
-  Empty
+  Concat([])
 }
 
 pub fn line() -> Document {
-  Line
+  Line(1)
+}
+
+pub fn lines(size: Int) -> Document {
+  Line(size)
 }
 
 pub fn concat(docs: List(Document)) -> Document {
@@ -82,7 +71,31 @@ pub fn group(doc: Document) -> Document {
   Group(doc)
 }
 
-pub fn to_string_builder(doc: Document, width: Int) -> StringBuilder {
+pub fn join(docs: List(Document), with separator: Document) -> Document {
+  concat(list.intersperse(docs, separator))
+}
+
+pub fn append(to first: Document, doc second: Document) -> Document {
+  case first {
+    Concat(docs) -> Concat(list.append(docs, [second]))
+    _ -> Concat([first, second])
+  }
+}
+
+pub fn prepend(to first: Document, doc second: Document) -> Document {
+  case first {
+    Concat(docs) -> Concat([second, ..docs])
+    _ -> Concat([second, first])
+  }
+}
+
+pub fn surround(doc: Document, open: Document, closed: Document) -> Document {
+  closed
+  |> prepend(doc)
+  |> prepend(open)
+}
+
+pub fn format(doc: Document, width: Int) -> StringBuilder {
   do_format(string_builder.new(), width, 0, [#(0, Unbroken, doc)])
 }
 
@@ -98,12 +111,12 @@ fn fits(
 ) -> Bool {
   case docs {
     _ if current_width > max_width -> False
+
     [] -> True
+
     [#(indent, mode, doc), ..rest] ->
       case doc {
-        Empty -> fits(rest, max_width, current_width)
-
-        Line -> True
+        Line(..) -> True
 
         Text(text) -> fits(rest, max_width, current_width + string.length(text))
 
@@ -140,12 +153,11 @@ fn do_format(
 ) -> StringBuilder {
   case docs {
     [] -> acc
+
     [#(indent, mode, doc), ..rest] ->
       case doc {
-        Empty -> do_format(acc, max_width, current_width, rest)
-
-        Line ->
-          string_builder.append(acc, "\n")
+        Line(size) ->
+          string_builder.append(acc, string.repeat("\n", size))
           |> string_builder.append(indentation(indent))
           |> do_format(max_width, indent, rest)
 
