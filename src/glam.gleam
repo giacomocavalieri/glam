@@ -6,15 +6,15 @@ import gleam/string_builder.{StringBuilder}
 pub fn main() {
   let join = fn(one, other) {
     case one, other {
-      Empty, document | document, Empty -> document
-      _, _ -> concat_all([one, soft_break(), other])
+      Empty, doc | doc, Empty -> doc
+      _, _ -> concat([one, break(), other])
     }
   }
 
   let hard_join = fn(one, other) {
     case one, other {
-      Empty, document | document, Empty -> document
-      _, _ -> concat_all([one, hard_break(), other])
+      Empty, doc | doc, Empty -> doc
+      _, _ -> concat([one, line(), other])
     }
   }
 
@@ -39,152 +39,147 @@ pub fn main() {
   let doc = if_then_else(cond, expr1, expr2)
 
   doc
-  |> to_string_builder(10)
+  |> to_string_builder(11)
   |> string_builder.to_string
   |> io.println
 }
 
 pub opaque type Document {
   Empty
-  Concat(left: Document, right: Document)
+  Line
+  Concat(docs: List(Document))
   Text(text: String)
-  Nest(document: Document, indentation: Int)
+  Nest(doc: Document, indentation: Int)
   Break
-  Group(document: Document)
+  Group(doc: Document)
 }
 
 pub fn empty() -> Document {
   Empty
 }
 
-pub fn concat(first: Document, with second: Document) -> Document {
-  Concat(first, second)
+pub fn line() -> Document {
+  Line
+}
+
+pub fn concat(docs: List(Document)) -> Document {
+  Concat(docs)
 }
 
 pub fn text(text: String) -> Document {
   Text(text)
 }
 
-pub fn nest(document: Document, by indentation: Int) -> Document {
-  Nest(document, indentation)
+pub fn nest(doc: Document, by indentation: Int) -> Document {
+  Nest(doc, indentation)
 }
 
 pub fn break() -> Document {
   Break
 }
 
-pub fn group(document: Document) -> Document {
-  Group(document)
+pub fn group(doc: Document) -> Document {
+  Group(doc)
 }
 
-pub fn concat_all(documents: List(Document)) -> Document {
-  case documents {
-    [first, ..rest] -> list.fold(rest, from: first, with: concat)
-    [] -> Empty
-  }
-}
-
-pub fn to_string_builder(document: Document, width: Int) -> StringBuilder {
-  [#(0, Unbroken, document)]
-  |> to_simple_document(width, 0, _)
-  |> simple_document_to_string_builder()
+pub fn to_string_builder(doc: Document, width: Int) -> StringBuilder {
+  do_format(string_builder.new(), width, 0, [#(0, Unbroken, doc)])
 }
 
 type Mode {
   Broken
   Unbroken
-  ForcedBroken
 }
 
 fn fits(
-  width: Int,
+  docs: List(#(Int, Mode, Document)),
+  max_width: Int,
   current_width: Int,
-  documents: List(#(Int, Mode, Document)),
 ) -> Bool {
-  case documents {
-    _ if current_width < 0 -> False
+  case docs {
+    _ if current_width > max_width -> False
     [] -> True
-    [#(_, _, Empty), ..rest] -> fits(width, current_width, rest)
-    [#(i, mode, Concat(one, other)), ..rest] ->
-      [#(i, mode, one), #(i, mode, other), ..rest]
-      |> fits(width, current_width, _)
-    [#(i, mode, Nest(document, j)), ..rest] ->
-      [#(i + j, mode, document), ..rest]
-      |> fits(width, current_width, _)
-    [#(_, _, Text(text)), ..rest] ->
-      fits(width, current_width - string.length(text), rest)
-    [#(_, Unbroken, Break), ..rest] -> fits(width, current_width - 1, rest)
-    [#(_, Broken, Break), ..] -> True
-    [#(i, _, Group(docs)), ..rest] ->
-      [#(i, Unbroken, docs), ..rest]
-      |> fits(width, current_width, _)
-  }
-}
+    [#(indent, mode, doc), ..rest] ->
+      case doc {
+        Empty -> fits(rest, max_width, current_width)
 
-// TODO make this tail recursive
-fn to_simple_document(
-  width: Int,
-  consumed: Int,
-  documents: List(#(Int, Mode, Document)),
-) -> SimpleDocument {
-  case documents {
-    [] -> SimpleEmpty
-    [#(_, _, Empty), ..rest] -> to_simple_document(width, consumed, rest)
-    [#(i, mode, Concat(one, other)), ..rest] ->
-      [#(i, mode, one), #(i, mode, other), ..rest]
-      |> to_simple_document(width, consumed, _)
-    [#(i, mode, Nest(document, j)), ..rest] ->
-      to_simple_document(width, consumed, [#(i + j, mode, document), ..rest])
-    [#(_, _, Text(text)), ..rest] ->
-      to_simple_document(width, consumed + string.length(text), rest)
-      |> SimpleText(text, _)
-    [#(_, Unbroken, Break), ..rest] ->
-      to_simple_document(width, consumed + 1, rest)
-      |> SimpleText(" ", _)
-    [#(i, Broken, Break), ..rest] ->
-      to_simple_document(width, i, rest)
-      |> SimpleLine(i, _)
-    [#(i, _, Group(document)), ..rest] -> {
-      let fits =
-        fits(width, width - consumed, [#(i, Unbroken, document), ..rest])
-      let mode = case fits {
-        True -> Unbroken
-        False -> Broken
+        Line -> True
+
+        Text(text) -> fits(rest, max_width, current_width + string.length(text))
+
+        Nest(doc, i) ->
+          [#(indent + i, mode, doc), ..rest]
+          |> fits(max_width, current_width)
+
+        Break ->
+          case mode {
+            Broken -> True
+            Unbroken -> fits(rest, max_width, current_width + 1)
+          }
+
+        Group(doc) ->
+          fits([#(indent, mode, doc), ..rest], max_width, current_width)
+
+        Concat(docs) ->
+          list.map(docs, fn(doc) { #(indent, mode, doc) })
+          |> list.append(rest)
+          |> fits(max_width, current_width)
       }
-      io.debug(document)
-      io.debug(mode)
-      io.println("---------------------")
-      to_simple_document(width, consumed, [#(i, mode, document), ..rest])
-    }
   }
 }
 
-type SimpleDocument {
-  SimpleEmpty
-  SimpleText(text: String, rest: SimpleDocument)
-  SimpleLine(indentation: Int, rest: SimpleDocument)
+fn indentation(size: Int) -> String {
+  string.repeat(" ", size)
 }
 
-fn simple_document_to_string_builder(document: SimpleDocument) -> StringBuilder {
-  do_simple_document_to_string_builder(document, string_builder.new())
-}
-
-fn do_simple_document_to_string_builder(
-  document: SimpleDocument,
-  accumulator: StringBuilder,
+fn do_format(
+  acc: StringBuilder,
+  max_width: Int,
+  current_width: Int,
+  docs: List(#(Int, Mode, Document)),
 ) -> StringBuilder {
-  case document {
-    SimpleEmpty -> accumulator
+  case docs {
+    [] -> acc
+    [#(indent, mode, doc), ..rest] ->
+      case doc {
+        Empty -> do_format(acc, max_width, current_width, rest)
 
-    SimpleText(text, rest) ->
-      accumulator
-      |> string_builder.append(text)
-      |> do_simple_document_to_string_builder(rest, _)
+        Line ->
+          string_builder.append(acc, "\n")
+          |> string_builder.append(indentation(indent))
+          |> do_format(max_width, indent, rest)
 
-    SimpleLine(indentation, rest) ->
-      accumulator
-      |> string_builder.append("\n")
-      |> string_builder.append(string.repeat(" ", indentation))
-      |> do_simple_document_to_string_builder(rest, _)
+        Break ->
+          case mode {
+            Broken ->
+              string_builder.append(acc, "\n")
+              |> string_builder.append(indentation(indent))
+              |> do_format(max_width, indent, rest)
+            Unbroken ->
+              string_builder.append(acc, " ")
+              |> do_format(max_width, current_width + 1, rest)
+          }
+
+        Concat(docs) ->
+          list.map(docs, fn(doc) { #(indent, mode, doc) })
+          |> list.append(rest)
+          |> do_format(acc, max_width, current_width, _)
+
+        Group(doc) ->
+          case fits([#(indent, Unbroken, doc)], max_width, current_width) {
+            True -> #(indent, Unbroken, doc)
+            False -> #(indent, Broken, doc)
+          }
+          |> list.prepend(to: rest)
+          |> do_format(acc, max_width, current_width, _)
+
+        Nest(doc, i) ->
+          [#(indent + i, mode, doc), ..rest]
+          |> do_format(acc, max_width, current_width, _)
+
+        Text(text) ->
+          string_builder.append(acc, text)
+          |> do_format(max_width, current_width + string.length(text), rest)
+      }
   }
 }
