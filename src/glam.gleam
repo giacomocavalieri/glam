@@ -4,22 +4,30 @@ import gleam/string
 import gleam/string_builder.{StringBuilder}
 
 pub fn main() {
-  let heading =
-    [text("entity"), text("prova"), text("{")]
-    |> join(with: break())
-    |> group
+  let list_name = "message"
+  let declaration = text("let " <> list_name <> " =")
+  let list_body =
+    [text("\"Gleam\""), text("\"is\"")]
+    |> list.flat_map(fn(item) { [item, text(","), space()] })
+    |> list.append([text("\"fun!\"")])
+    |> concat_group
 
-  let lollipop =
-    [text("-o"), text("nome")]
-    |> join(with: break())
-    |> group
+  let list =
+    [
+      text("["),
+      prepend(space(), to: list_body)
+      |> nest(by: 2),
+      break(",", " "),
+      text("]"),
+    ]
+    |> concat_group
 
   let doc =
-    heading
-    |> append(line())
-    |> append(lollipop)
+    [declaration, space(), list]
+    |> nest_group(by: 2)
 
-  use size <- list.each([10, 15, 20])
+  use size <- list.each([20, 30, 50])
+  io.println(" Available space")
   io.println(string.repeat("-", size))
 
   doc
@@ -35,7 +43,8 @@ pub opaque type Document {
   Concat(docs: List(Document))
   Text(text: String)
   Nest(doc: Document, indentation: Int)
-  Break
+  ForceBreak(doc: Document)
+  Break(broken: String, unbroken: String)
   Group(doc: Document)
 }
 
@@ -63,12 +72,29 @@ pub fn nest(doc: Document, by indentation: Int) -> Document {
   Nest(doc, indentation)
 }
 
-pub fn break() -> Document {
-  Break
+pub fn space() -> Document {
+  Break("", " ")
+}
+
+pub fn break(broken: String, unbroken: String) {
+  Break(broken, unbroken)
 }
 
 pub fn group(doc: Document) -> Document {
   Group(doc)
+}
+
+pub fn force_break(doc: Document) -> Document {
+  ForceBreak(doc)
+}
+
+pub fn concat_group(docs: List(Document)) -> Document {
+  group(concat(docs))
+}
+
+pub fn nest_group(docs: List(Document), by indentation: Int) -> Document {
+  concat_group(docs)
+  |> nest(by: indentation)
 }
 
 pub fn join(docs: List(Document), with separator: Document) -> Document {
@@ -118,16 +144,19 @@ fn fits(
       case doc {
         Line(..) -> True
 
+        ForceBreak(..) -> False
+
         Text(text) -> fits(rest, max_width, current_width + string.length(text))
 
         Nest(doc, i) ->
           [#(indent + i, mode, doc), ..rest]
           |> fits(max_width, current_width)
 
-        Break ->
+        Break(unbroken: unbroken, ..) ->
           case mode {
             Broken -> True
-            Unbroken -> fits(rest, max_width, current_width + 1)
+            Unbroken ->
+              fits(rest, max_width, current_width + string.length(unbroken))
           }
 
         Group(doc) ->
@@ -161,16 +190,24 @@ fn do_format(
           |> string_builder.append(indentation(indent))
           |> do_format(max_width, indent, rest)
 
-        Break ->
+        Break(unbroken: unbroken, broken: broken) ->
           case mode {
+            Unbroken -> {
+              let new_width = current_width + string.length(unbroken)
+              string_builder.append(acc, unbroken)
+              |> do_format(max_width, new_width, rest)
+            }
+
             Broken ->
-              string_builder.append(acc, "\n")
+              string_builder.append(acc, broken)
+              |> string_builder.append("\n")
               |> string_builder.append(indentation(indent))
               |> do_format(max_width, indent, rest)
-            Unbroken ->
-              string_builder.append(acc, " ")
-              |> do_format(max_width, current_width + 1, rest)
           }
+
+        ForceBreak(doc) ->
+          [#(indent, Broken, doc)]
+          |> do_format(acc, max_width, current_width, _)
 
         Concat(docs) ->
           list.map(docs, fn(doc) { #(indent, mode, doc) })
