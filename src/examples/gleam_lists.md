@@ -7,12 +7,12 @@ pretty print a simple data structure.
 
 This tutorial is full of code examples so you can follow along with your own
 Gleam project. If you have a working installation of Gleam, open your terminal
-and
+and enter the following:
 
 ```shell
-λ> gleam new glam_tutorial # create a new project named `glam_tutorial`
-λ> cd glam_tutorial        # jump into its directory
-λ> gleam add doc           # add the `doc` library to the project's dependencies
+gleam new glam_tutorial # create a new project named `glam_tutorial`
+cd glam_tutorial        # jump into its directory
+gleam add doc           # add the `doc` library to the project's dependencies
 ```
 
 First things first, we can import the library in a module like this:
@@ -32,7 +32,7 @@ they get formatted by the Gleam pretty printer. There are two rules:
   line and is indented by two spaces; in addition the last element has a
   trailing comma
 
-Since a ~~picture~~ code snippet speaks a thousand words let me show you and example:
+Since a ~~picture~~ code snippet is worth a thousand words let me show you an example:
 
 ```gleam
 // ───────────────── // <- This is to show the 20 chars limit
@@ -46,12 +46,12 @@ Since a ~~picture~~ code snippet speaks a thousand words let me show you and exa
 ]
 ```
 
-Now that we have a clear picture of how our pretty printed lists should look
+Now that we have a clear picture of what our pretty printed lists should look
 like we can dive deep into the wonders of pretty printing!
 
 ## Basic building blocks
 
-Let's start by writing the type of the pretty printing function we want,
+Let's start by writing the type of the pretty printing function we need,
 after all it is always a good idea to write down the types and let them guide
 you!
 
@@ -69,8 +69,7 @@ Why isn't the function returning a `String`?
 Here is the first crucial point of how the glam library handles pretty printing:
 you can describe the structured text you want to pretty print with some basic
 building blocks and the library will do the heavy lifting of trying to find the
-best layout for it.
-
+best layout.
 As you may have guessed those building blocks are of type `Document`! So as long
 as we can turn a list into a document the library will pretty print it for us.
 Quite neat, isn't it?
@@ -89,7 +88,7 @@ doc.text("foo bar baz")
 Aside from `doc.text` there are a few things we need to unpack in this example:
 as you can see, the function to actually pretty print a document by turning it
 into a string is `doc.to_string`.
-It's second parameter is the maximum line width used to figure out the best
+Its second parameter is the maximum line width used to figure out the best
 layout for the document.
 
 With this function in our toolbox we can now turn each of the items of the list
@@ -185,3 +184,13 @@ groups of documents and insert newlines: this is the job for `doc.group` and
 ## Recap
 
 > TODO:
+
+---
+
+Thanks for following along! If you spot any spelling mistake, wrong code
+snippets or there are parts that are not clear, please let me know!
+
+Your feedback really means a lot to me so don't be scared to ping me anywhere!
+My Twitter handle is [@giacomo_cava](https://twitter.com/giacomo_cava) and I
+usually hang around in the [Gleam Discord server](https://discord.gg/Fm8Pwmy),
+so you can ping me there (I'm `jak11`)
