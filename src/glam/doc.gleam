@@ -52,15 +52,6 @@ pub fn force_break(doc: Document) -> Document {
   ForceBreak(doc)
 }
 
-pub fn concat_group(docs: List(Document)) -> Document {
-  group(concat(docs))
-}
-
-pub fn nest_group(docs: List(Document), by indentation: Int) -> Document {
-  concat_group(docs)
-  |> nest(by: indentation)
-}
-
 pub fn join(docs: List(Document), with separator: Document) -> Document {
   concat(list.intersperse(docs, separator))
 }
@@ -85,8 +76,13 @@ pub fn surround(doc: Document, open: Document, closed: Document) -> Document {
   |> prepend(open)
 }
 
-pub fn format(doc: Document, width: Int) -> StringBuilder {
+pub fn to_string_builder(doc: Document, width: Int) -> StringBuilder {
   do_format(string_builder.new(), width, 0, [#(0, Unbroken, doc)])
+}
+
+pub fn to_string(doc: Document, width: Int) -> String {
+  to_string_builder(doc, width)
+  |> string_builder.to_string()
 }
 
 type Mode {
