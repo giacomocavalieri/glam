@@ -1,42 +1,6 @@
-import gleam/io
 import gleam/list
 import gleam/string
 import gleam/string_builder.{StringBuilder}
-
-pub fn main() {
-  let list_name = "message"
-  let declaration = text("let " <> list_name <> " =")
-  let list_body =
-    [text("\"Gleam\""), text("\"is\"")]
-    |> list.flat_map(fn(item) { [item, text(","), space()] })
-    |> list.append([text("\"fun!\"")])
-    |> concat_group
-
-  let list =
-    [
-      text("["),
-      prepend(space(), to: list_body)
-      |> nest(by: 2),
-      break(",", " "),
-      text("]"),
-    ]
-    |> concat_group
-
-  let doc =
-    [declaration, space(), list]
-    |> nest_group(by: 2)
-
-  use size <- list.each([20, 30, 50])
-  io.println(" Available space")
-  io.println(string.repeat("-", size))
-
-  doc
-  |> format(size)
-  |> string_builder.to_string
-  |> io.println
-
-  io.println("\n\n")
-}
 
 pub opaque type Document {
   Line(size: Int)
