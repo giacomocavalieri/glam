@@ -28,8 +28,8 @@ pub fn concat(docs: List(Document)) -> Document {
   Concat(docs)
 }
 
-pub fn text(text: String) -> Document {
-  Text(text)
+pub fn from_string(string: String) -> Document {
+  Text(string)
 }
 
 pub fn nest(doc: Document, by indentation: Int) -> Document {
@@ -56,11 +56,22 @@ pub fn join(docs: List(Document), with separator: Document) -> Document {
   concat(list.intersperse(docs, separator))
 }
 
+pub fn concat_join(
+  docs: List(Document),
+  with separators: List(Document),
+) -> Document {
+  join(docs, concat(separators))
+}
+
 pub fn append(to first: Document, doc second: Document) -> Document {
   case first {
     Concat(docs) -> Concat(list.append(docs, [second]))
     _ -> Concat([first, second])
   }
+}
+
+pub fn append_docs(first: Document, docs: List(Document)) -> Document {
+  append(to: first, doc: concat(docs))
 }
 
 pub fn prepend(to first: Document, doc second: Document) -> Document {
@@ -70,10 +81,8 @@ pub fn prepend(to first: Document, doc second: Document) -> Document {
   }
 }
 
-pub fn surround(doc: Document, open: Document, closed: Document) -> Document {
-  closed
-  |> prepend(doc)
-  |> prepend(open)
+pub fn prepend_docs(first: Document, docs: List(Document)) -> Document {
+  prepend(to: first, doc: concat(docs))
 }
 
 pub fn to_string_builder(doc: Document, width: Int) -> StringBuilder {
@@ -87,6 +96,7 @@ pub fn to_string(doc: Document, width: Int) -> String {
 
 type Mode {
   Broken
+  ForceBroken
   Unbroken
 }
 
@@ -114,7 +124,7 @@ fn fits(
 
         Break(unbroken: unbroken, ..) ->
           case mode {
-            Broken -> True
+            Broken | ForceBroken -> True
             Unbroken ->
               fits(rest, max_width, current_width + string.length(unbroken))
           }
@@ -158,7 +168,7 @@ fn do_format(
               |> do_format(max_width, new_width, rest)
             }
 
-            Broken ->
+            Broken | ForceBroken ->
               string_builder.append(acc, broken)
               |> string_builder.append("\n")
               |> string_builder.append(indentation(indent))
