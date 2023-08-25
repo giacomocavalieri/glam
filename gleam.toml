@@ -14,3 +14,8 @@ gleam_stdlib = "~> 0.30"
 
 [dev-dependencies]
 gleeunit = "~> 0.10"
+
+[documentation]
+pages = [
+  { title = "A step by step tutorial", path = "gleam_lists.html", source = "./src/examples/gleam_lists.md" },
+]
