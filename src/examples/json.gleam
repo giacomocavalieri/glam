@@ -1,5 +1,6 @@
 import gleam/bool
 import gleam/float
+import gleam/int
 import gleam/io
 import gleam/list
 import gleam/string
@@ -25,11 +26,20 @@ fn comma() -> Document {
 pub fn json_to_doc(json: JSON) -> Document {
   case json {
     String(string) -> doc.from_string("\"" <> string <> "\"")
-    Number(number) -> doc.from_string(float.to_string(number))
+    Number(number) -> number_to_doc(number)
     Bool(bool) -> bool_to_doc(bool)
     Null -> doc.from_string("null")
     Array(objects) -> array_to_doc(objects)
     Object(fields) -> object_to_doc(fields)
+  }
+}
+
+fn number_to_doc(number: Float) -> Document {
+  let integer = float.truncate(number)
+  let is_integer = int.to_float(integer) == number
+  case is_integer {
+    True -> doc.from_string(int.to_string(integer))
+    False -> doc.from_string(float.to_string(number))
   }
 }
 
@@ -68,26 +78,36 @@ fn field_to_doc(field: #(String, JSON)) -> Document {
 }
 
 pub fn main() {
-  let width = 50
-  let array = Array([Null, Null, Null, Bool(True), Bool(False)])
-  let nested_object =
+  let the_sundial =
     Object([
-      #("inner1", Number(123_123_123.1)),
-      #("inner2", Number(11.0)),
-      #("arrg", array),
-    ])
-  let object =
-    Object([
-      #("field1", Null),
-      #("field2", array),
-      #("nested", nested_object),
-      #("field3", String("foo bar baz")),
+      #("title", String("The sundial")),
+      #("author", String("Shirley Jackson")),
+      #("publication_year", Number(1958.0)),
+      #("read", Bool(True)),
+      #(
+        "characters",
+        Array([
+          String("Mrs. Halloran"),
+          String("Essex"),
+          String("Captain Scarabombardon"),
+        ]),
+      ),
+      #("average_rating", Number(5.0)),
+      #(
+        "ratings",
+        Array([
+          Object([#("from", String("Ben")), #("value", Number(5.0))]),
+          Object([#("from", String("Giacomo")), #("value", Number(5.0))]),
+        ]),
+      ),
     ])
 
-  string.repeat("-", width)
-  |> io.println
+  use max_width <- list.each([30, 50, 80])
+  io.println("Max width: " <> int.to_string(max_width))
+  io.println(string.repeat("-", max_width))
 
-  json_to_doc(object)
-  |> doc.to_string(width)
+  json_to_doc(the_sundial)
+  |> doc.to_string(max_width)
   |> io.println
+  io.println("")
 }
