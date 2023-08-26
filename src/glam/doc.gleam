@@ -12,13 +12,13 @@ pub opaque type Document {
   Group(doc: Document)
 }
 
-pub fn empty() -> Document {
-  Concat([])
-}
+pub const empty: Document = Concat([])
 
-pub fn line() -> Document {
-  Line(1)
-}
+pub const line: Document = Line(1)
+
+pub const space: Document = Break("", " ")
+
+pub const soft_break: Document = Break("", "")
 
 pub fn lines(size: Int) -> Document {
   Line(size)
@@ -34,10 +34,6 @@ pub fn from_string(string: String) -> Document {
 
 pub fn nest(doc: Document, by indentation: Int) -> Document {
   Nest(doc, indentation)
-}
-
-pub fn space() -> Document {
-  Break("", " ")
 }
 
 pub fn break(broken: String, unbroken: String) {
