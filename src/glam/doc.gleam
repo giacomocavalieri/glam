@@ -172,7 +172,7 @@ fn do_format(
           }
 
         ForceBreak(doc) ->
-          [#(indent, Broken, doc)]
+          [#(indent, ForceBroken, doc), ..rest]
           |> do_format(acc, max_width, current_width, _)
 
         Concat(docs) ->
