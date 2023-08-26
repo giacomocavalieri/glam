@@ -46,6 +46,11 @@ cd glam_tutorial        # jump into its directory
 gleam add glam          # add the `glam` package to the project's dependencies
 ```
 
+> If you know nothing about Gleam and somehow ended up here, I can recommend you
+> to first check out the
+> [Gleam's Exercism track]((https://exercism.org/tracks/gleam/concepts)).
+> It's a great resource to get started!
+
 First things first, you can import the glam package in your project's
 modules like this:
 
@@ -69,13 +74,13 @@ The first thing you can notice is that the pretty printing function's return
 type is `Document`. But wait, weren't we supposed to pretty print the list?
 Why isn't the function returning a `String`?
 
-Here is a crucial point of how the glam library handles pretty printing:
+Here is a crucial point of how the glam package handles pretty printing:
 you can _describe_ the structure of the text to pretty print with some basic
-building blocks, and the library will do the heavy lifting of trying to find the
+building blocks, and glam will do the heavy lifting of trying to find the
 best layout for you.
 As you may have guessed those building blocks are `Document`s. As long
-as you can turn something into a `Document` the library will pretty print it
-for you. Quite neat, isn't it?
+as you can turn something into a `Document`, glam will pretty print it for you.
+Quite neat, isn't it?
 
 ### A naive approach
 
@@ -84,9 +89,9 @@ luckily glam has got us covered with the `doc.from_string` function which does
 exactly that:
 
 ```gleam
-doc.from_string("foo bar baz")
+doc.from_string("Hello, world!")
 |> doc.to_string(80)
-// -> foo bar baz
+// -> Hello, world!
 ```
 
 There are a few things to unpack in this example:
@@ -121,18 +126,13 @@ pub fn pretty_list(list: List(String)) -> Document {
 }
 ```
 
-`pretty_list` is now ready to be used:
+We're now ready to try `pretty_list`:
 
 ```gleam
-pub fn main() {
-  let list = ["foo", "bar"]
-  pretty_list(list)
-  |> doc.to_string(80)
-  |> io.println
-}
-
-// main()
-// -> "foo""bar"
+["Hello", "world!"]
+|> pretty_list
+|> doc.to_string(80)
+// -> "Hello""world!"
 ```
 
 Not quite list-looking but we're getting there... adding commas and brackets can
@@ -148,9 +148,13 @@ pub fn pretty_list(list: List(String)) -> Document {
   |> list.append([doc.from_string("]")])     // final closing bracket
   |> doc.concat                              // join everything together
 }
+```
 
-// main()
-// -> ["foo", "bar"]
+```gleam
+["Hello", "world!"]
+|> pretty_list
+|> doc.to_string(80)
+// -> ["Hello", "world!"]
 ```
 
 Awesome, with a couple of lines of code you can now pretty print a list of
@@ -160,14 +164,14 @@ printed:
 
 ```gleam
 pub fn main() {
-  let list = ["foo", "bar"]
+  let list = ["Hello", "world!"]
   pretty_list(list)
   |> doc.to_string(5) // <- this is really small and the list
   |> io.println       //    should be printed on multiple lines
 }
 
 // main()
-// -> ["foo", "bar"]
+// -> ["Hello", "world!"]
 ```
 
 We would expect the list to be split on multiple lines like in the example I
@@ -193,9 +197,10 @@ pretty printing of documents works:
 > as a `list.fold(strings, from: "", with: fn(acc, string) { acc <> string })`
 >
 > If this `fold` thing looks like gibberish to you, don't worry!
-> You can look at
+> You can look at the
 > [Gleam's Exercism track](https://exercism.org/tracks/gleam/concepts), it's a
-> great way to get started and hone your functional programming skills!
+> great way to get started and hone your functional programming skills! (At
+> this point I'm sure you get how much I love Gleam's Exercism track)
 
 #### Grouping docs
 
@@ -217,20 +222,20 @@ Let's look at an example to make things clearer:
 
 ```gleam
 let doc =
-  [doc.from_string("Hello,"), doc.space, doc.from_string("world!")]
+  [doc.from_string("Hello"), doc.space, doc.from_string("world!")]
   |> doc.concat
   |> doc.group
 
 doc.to_string(doc, 80)
-// -> Hello, world!
+// -> Hello world!
 doc.to_string(doc, 10)
 // ->
-// Hello,
+// Hello
 // world!
 ```
 
 As you can see, in the second example, where the line width wouldn't allow
-`"Hello,"` and `"world!"` to fit onto a single line, the space is rendered as a
+`"Hello"` and `"world!"` to fit onto a single line, the space is rendered as a
 newline.
 
 #### Even more examples
@@ -326,7 +331,7 @@ inner groups it's composed of. Each subgroup is considered _separately_.
 >   |> doc.group
 >
 > let efgh =
->   ["a", "b", "c", "d"]
+>   ["e", "f", "g", "h"]
 >   |> list.map(doc.from_string)
 >   |> doc.join(with: doc.space)
 >   |> doc.group
@@ -615,7 +620,30 @@ And that's it, the pretty printer is complete!
 
 ## Recap
 
-TODO: recap di cosa hai imparato con questo tutorial
+Phew! That was quite a long tutorial so give yourself a pat in the back and
+enjoy the beautifully pretty printed lists.
+
+We covered most of the glam API and got an understanding of how each piece can
+influence the pretty printing process:
+
+- `doc.from_string` to generate documents from strings
+- `doc.concat` to join together bunch of documents
+- `doc.group` and `doc.space` to allow the pretty printer to split documents
+- `doc.nest` to nest documents when the pretty printer decides to split them
+- `doc.break` to conditionally render strings depending if their group gets
+  splitted or not
+
+We've also used some utility methods like:
+
+- `doc.join` which is equivalent to interspersing and then using `doc.concat`
+- `doc.prepend` to prepend a document to an existing one
+- `doc.append` to append a document to an existing one
+
+But there's still a lot more to discover if you're interested in pretty
+printing and want to tackle bigger, more complex problems!
+You can look into the [JSON pretty printing example](TODO) or the
+[todo list pretty printing example](TODO) to get a deeper understanding of
+nesting and find out about other nice utility methods the package has to offer.
 
 ---
 
@@ -625,4 +653,5 @@ snippets or there are parts that are not clear, please let me know!
 Your feedback really means a lot to me so don't be scared to reach out!
 My Twitter handle is [@giacomo_cava](https://twitter.com/giacomo_cava) and I
 usually hang around in the [Gleam Discord server](https://discord.gg/Fm8Pwmy),
-so you can ping me there (I'm `jak11`)
+so you can ping me there, I'm `jak11` (also the Gleam Discord is full of
+amazing people so give it a try anyway ✨)
