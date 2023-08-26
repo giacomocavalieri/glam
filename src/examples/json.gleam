@@ -41,21 +41,21 @@ fn bool_to_doc(bool: Bool) -> Document {
 
 fn array_to_doc(objects: List(JSON)) -> Document {
   list.map(objects, json_to_doc)
-  |> doc.concat_join(with: [comma(), doc.space()])
+  |> doc.concat_join(with: [comma(), doc.space])
   |> parenthesise("[", "]")
 }
 
 fn object_to_doc(fields: List(#(String, JSON))) -> Document {
   list.map(fields, field_to_doc)
-  |> doc.concat_join(with: [comma(), doc.space()])
+  |> doc.concat_join(with: [comma(), doc.space])
   |> parenthesise("{", "}")
 }
 
 fn parenthesise(doc: Document, open: String, close: String) -> Document {
   doc
-  |> doc.prepend_docs([doc.from_string(open), doc.space()])
+  |> doc.prepend_docs([doc.from_string(open), doc.space])
   |> doc.nest(by: 2)
-  |> doc.append_docs([doc.space(), doc.from_string(close)])
+  |> doc.append_docs([doc.space, doc.from_string(close)])
   |> doc.group
 }
 
