@@ -22,5 +22,5 @@ gleeunit = "~> 0.10"
 
 [documentation]
 pages = [
-  { title = "A step by step tutorial", path = "gleam_lists.html", source = "./src/examples/gleam_lists.md" },
+  { title = "A step by step introduction", path = "01_gleam_lists.html", source = "./tutorials/01_gleam_lists.md" },
 ]
