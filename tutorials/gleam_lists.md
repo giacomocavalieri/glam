@@ -500,13 +500,13 @@ turn into a newline when splitting a group. Turns out that `doc.break` is a
 more general version of `doc.space`. Here is how it can be called:
 
 ```gleam
-doc.break("broken", "unbroken")
+doc.break("unbroken", "broken")
 ```
 
-- It's first argument is the string that will be displayed if the pretty printer
-  decides to break the document _before_ inserting a newline
-- It's second argument is the string that will be displayed if the pretty
+- It's first argument is the string that will be displayed if the pretty
   printer decides not to break the document
+- It's second argument is the string that will be displayed if the pretty
+  printer decides to break the document _before_ inserting a newline
 
 ### The pretty printing algorithm
 
@@ -514,9 +514,9 @@ This description of `doc.break` may sound a bit hand wavy so, to clear things
 up, let's have a final look at how the formatting of documents actually works:
 
 - The pretty printer always tries to put a group onto a single line by treating
-  every `doc.break` as if it were its second argument
+  every `doc.break` as if it were its first argument
 - If the group exceeds the maximum line width then all its `break`s are rendered
-  as their first argument and immediately followed by a newline
+  as their second argument and immediately followed by a newline
   - If the document is also nested, the pretty printer adds a nesting of the
     given level after the newline
 - After breaking the outermost group, the pretty printer considers every nested
@@ -525,7 +525,7 @@ up, let's have a final look at how the formatting of documents actually works:
 Let's look at an example:
 
 ```gleam
-let visible_space = doc.break("↩", "•")
+let visible_space = doc.break("•", "↩")
 let doc =
   ["Gleam", "is", "fun!"]
   |> doc.join(with: visible_space)
@@ -546,7 +546,7 @@ its breaks are displayed as `"↩"`; if it is not broken they are displayed as
 `"•"`.
 
 > `doc.space` can actually be defined in terms of `doc.break` (and that's how
-> it is defined in glam!) as `doc.break("", " ")`:
+> it is defined in glam!) as `doc.break(" ", "")`:
 >
 > - if the group is not broken we render a single whitespace
 > - if the group gets broken we do not render anything and let the pretty
@@ -559,7 +559,7 @@ to disaply a trailing comma after the last element _only if_ the list is split
 onto multiple lines:
 
 ```gleam
-let trailing_comma = break(",", "")
+let trailing_comma = break("", ",")
 ```
 
 This comma will only be displayed if the group it belongs to is broken by the
@@ -570,7 +570,7 @@ pub fn pretty_list(list: List(String)) -> Document {
   let list_item_to_document = fn(item) { doc.from_string("\"" <> item <> "\"") }
   let comma = doc.concat([doc.from_string(","), doc.space])
   let open_square = doc.concat([doc.from_string("["), doc.space])
-  let trailing_comma = break(",", "")
+  let trailing_comma = break("", ",")
   let close_square = doc.concat([trailing_comma, doc.from_string("]")])
   // ^-- we add the trailing comma right before the closing bracket
 
@@ -604,7 +604,7 @@ pub fn pretty_list(list: List(String)) -> Document {
   let open_square = doc.concat([doc.from_string("["), doc.soft_break])
   // ^-- so that there won't be a whitespace after the open bracket
   //     but the pretty printer can still split it
-  let trailing_comma = doc.break(",", "")
+  let trailing_comma = doc.break("", ",")
   let close_square = doc.concat([trailing_comma, doc.from_string("]")])
 
   list.map(list, list_item_to_document)
