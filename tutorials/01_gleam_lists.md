@@ -5,16 +5,15 @@
 The goal of this tutorial is to get you started on pretty printing with the
 glam package introducing its API a step at a time.
 
-As a running example we're going to write a pretty printer for lists of strings,
-there are two here are two straightforward rules we want our pretty printer to
-follow:
+As a running example we're going to write a pretty printer for lists of strings.
+There are three rules we want our pretty printer to follow:
 
 - If a list is shorter than the maximum allowed line width, it is kept on
   a single line
 - If it is longer than the maximum line width, each element is placed on a new
   line and is indented by two spaces; in addition the last element has a
   trailing comma
-- All strings are surrounded by `"`
+- All strings are surrounded by double quotes `"`
 
 Since a ~~picture~~ code snippet is worth a thousand words let me show you an
 example:
@@ -61,7 +60,7 @@ import glam/doc.{Document}
 ## Basic building blocks
 
 Let's start by writing the type of the function that can turn lists into pretty
-printed lists, after all it is always a good idea to write down the types and
+printed lists; after all it is always a good idea to write down the types and
 let them guide you:
 
 ```gleam
@@ -78,9 +77,10 @@ Here is a crucial point of how the glam package handles pretty printing:
 you can _describe_ the structure of the text to pretty print with some basic
 building blocks, and glam will do the heavy lifting of trying to find the
 best layout for you.
-As you may have guessed those building blocks are `Document`s. As long
-as you can turn something into a `Document`, glam will pretty print it for you.
-Quite neat, isn't it?
+As you may have guessed those building blocks are `Document`s.
+
+As long as you can turn something into a `Document`, glam will pretty print it
+for you. Quite neat, isn't it?
 
 ### A naive approach
 
