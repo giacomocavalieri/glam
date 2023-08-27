@@ -23,23 +23,50 @@ fn comma() -> Document {
   doc.from_string(",")
 }
 
+/// Pretty prints a JSON object:
+/// - booleans are printed as "true"/"false"
+/// - strings are surrounded by quotes
+/// - null is printed as "null"
+/// - arrays are split on newlines only if they cannot fit on one
+/// - the same applies for objects
+/// 
+/// ## Examples
+/// 
+/// ```
+/// > let array = Array([Null, Bool(True), Bool(False)]) |> json_to_doc
+/// > array |> doc.to_string(40)
+/// [null, true, false]
+/// 
+/// > array |> doc.to_string(10)
+/// [
+///   null,
+///   true,
+///   false
+/// ]
+/// ``` 
+/// 
+/// ```
+/// > let object =
+/// >   Object([#("name", String("Giacomo")), #("loves_gleam", Bool(True))])
+/// >   |> json_to_doc
+/// > object |> doc.to_string(80)
+/// { name: "Giacomo", loves_gleam: True } 
+/// 
+/// > object |> doc.to_string(10)
+/// {
+///   name: "Giacomo",
+///   loves_gleam: True
+/// }
+/// ```
+/// 
 pub fn json_to_doc(json: JSON) -> Document {
   case json {
     String(string) -> doc.from_string("\"" <> string <> "\"")
-    Number(number) -> number_to_doc(number)
+    Number(number) -> doc.from_string(float.to_string(number))
     Bool(bool) -> bool_to_doc(bool)
     Null -> doc.from_string("null")
     Array(objects) -> array_to_doc(objects)
     Object(fields) -> object_to_doc(fields)
-  }
-}
-
-fn number_to_doc(number: Float) -> Document {
-  let integer = float.truncate(number)
-  let is_integer = int.to_float(integer) == number
-  case is_integer {
-    True -> doc.from_string(int.to_string(integer))
-    False -> doc.from_string(float.to_string(number))
   }
 }
 

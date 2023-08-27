@@ -4,6 +4,27 @@ import gleam/list
 import gleam/string
 import glam/doc.{Document}
 
+/// Pretty print a list of strings:
+/// - each string is surrounded by quotes
+/// - each string is separated by a comma and a space
+/// - if the list does not fit on one line each one of its items should be on
+///   a newline and indented
+/// 
+/// ## Examples
+/// 
+/// ```
+/// > let list = ["Gleam", "is", "fun!"] |> pretty_list
+/// > list |> doc.to_string(30)
+/// ["Gleam", "is", "fun!"]
+/// 
+/// > list |> doc.to_string(6)
+/// [
+///   "Gleam",
+///   "is",
+///   "fun!",
+/// ]
+/// ```
+/// 
 fn pretty_list(list: List(String)) -> Document {
   let list_item_to_document = fn(item) { doc.from_string("\"" <> item <> "\"") }
   let comma = doc.concat([doc.from_string(","), doc.space])
