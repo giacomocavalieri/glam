@@ -142,17 +142,18 @@ pub fn concat_join(
 /// 
 pub const empty: Document = Concat([])
 
-/// Forces the pretty printer to break all the `break`s of the outermost `group`
-/// into newlines as if it didn't fit on a single line.
+/// Forces the pretty printer to break all the `break`s of the outermost
+/// document. This still has no effect on `group`s as the pretty printer will
+/// always try to put them on a single line before splitting them.
 /// 
 /// ## Examples
 /// 
 /// ```gleam
-/// >   [from_string("pretty"), break("•", "↩"), from_string("printed")]
-/// >   |> concat
-/// >   |> group
-/// >   |> force_break
-/// >   |> to_string(100)
+/// > [from_string("pretty"), break("•", "↩"), from_string("printed")]
+/// > |> concat
+/// > |> force_break
+/// > |> group
+/// > |> to_string(100)
 /// "pretty↩
 /// printed"
 /// ```
@@ -226,7 +227,7 @@ pub fn group(doc: Document) -> Document {
 /// ## Examples
 /// 
 /// ```gleam
-/// > const message =
+/// > let message =
 /// >   ["Gleam", "is", "fun!"]
 /// >   |> list.map(from_string)
 /// >   |> join(with: space)
