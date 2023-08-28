@@ -3,7 +3,7 @@ version = "1.0.0"
 description = "A package to help you easily pretty print structured data"
 
 licences = ["Apache-2.0"]
-repository = { type = "github", user = "username", repo = "project" }
+repository = { type = "github", user = "giacomocavalieri", repo = "glam" }
 internal_modules = ["examples", "examples/*"]
 
 [dependencies]
