@@ -54,6 +54,10 @@ pretty_list(["Gleam", "is", "fun!"])
 // ]
 ```
 
+You can also have a look at the
+[`examples`](https://github.com/giacomocavalieri/glam/tree/main/src/examples)
+folder in the GitHub repo, there you'll also find a JSON pretty printer.
+
 ## Contributing
 
 If you think there's any way to improve this package, or if you spot a bug

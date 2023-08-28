@@ -635,8 +635,9 @@ We've also used some utility methods like:
 - `doc.prepend` to prepend a document to an existing one
 - `doc.append` to append a document to an existing one
 
-If you want more examples you can have a look at the `examples` folder in the
-glam repo.
+If you want more examples you can have a look at the
+[`examples`](https://github.com/giacomocavalieri/glam/tree/main/src/examples)
+folder in the glam repo.
 
 ---
 
