@@ -1,8 +1,3 @@
-//// TODO: some generic introduction on pretty printing,
-////       - why do we need this
-////       - what does glam has to offer
-////       - where to start? (tutorials, API doc with examples, full examples)
-
 import gleam/list
 import gleam/string
 import gleam/string_builder.{StringBuilder}
@@ -24,10 +19,10 @@ pub opaque type Document {
 /// ## Examples
 /// 
 /// ```gleam
-/// > from_string("pretty")
-/// > |> append(from_string(" printer"))
-/// > |> to_string(80)
-/// "pretty printer"
+/// from_string("pretty")
+/// |> append(from_string(" printer"))
+/// |> to_string(80)
+/// // -> "pretty printer"
 /// ```
 /// 
 pub fn append(to first: Document, doc second: Document) -> Document {
@@ -44,14 +39,14 @@ pub fn append(to first: Document, doc second: Document) -> Document {
 /// ## Examples
 /// 
 /// ```gleam
-/// > from_string("pretty")
-/// > |> append_docs([
-/// >   from_string("printing"),
-/// >   space,
-/// >   from_string("rocks!"),
-/// > ])
-/// > |> to_string(80) 
-/// "pretty printing rocks!"
+/// from_string("pretty")
+/// |> append_docs([
+///   from_string("printing"),
+///   space,
+///   from_string("rocks!"),
+/// ])
+/// |> to_string(80) 
+/// // -> "pretty printing rocks!"
 /// ```
 /// 
 pub fn append_docs(first: Document, docs: List(Document)) -> Document {
@@ -68,17 +63,17 @@ pub fn append_docs(first: Document, docs: List(Document)) -> Document {
 /// ## Examples
 /// 
 /// ```gleam
-/// > let message =
-/// >   [from_string("pretty"), break("•", "↩"), from_string("printed")]
-/// >   |> concat
-/// >   |> group
+/// let message =
+///   [from_string("pretty"), break("•", "↩"), from_string("printed")]
+///   |> concat
+///   |> group
 /// 
-/// > message |> to_string(20)
-/// "pretty•printed"
+/// message |> to_string(20)
+/// // -> "pretty•printed"
 /// 
-/// > message |> to_string(10)
-/// "pretty↩
-/// printed"
+/// message |> to_string(10)
+/// // -> "pretty↩
+/// // printed"
 /// ```
 /// 
 pub fn break(unbroken: String, broken: String) {
@@ -98,11 +93,11 @@ pub fn break(unbroken: String, broken: String) {
 /// ## Examples
 /// 
 /// ```gleam
-/// > ["pretty", " ", "printed"]
-/// > |> list.map(from_string)
-/// > |> concat
-/// > |> to_string(80)
-/// "pretty printed"
+/// ["pretty", " ", "printed"]
+/// |> list.map(from_string)
+/// |> concat
+/// |> to_string(80)
+/// // -> "pretty printed"
 /// ```
 /// 
 pub fn concat(docs: List(Document)) -> Document {
@@ -117,11 +112,11 @@ pub fn concat(docs: List(Document)) -> Document {
 /// ## Examples
 /// 
 /// ```gleam
-/// > ["wow", "so", "many", "commas"]
-/// > |> list.map(from_string)
-/// > |> concat_join([from_string(","), space])
-/// > |> to_string(80)
-/// "wow, so, many, commas"
+/// ["wow", "so", "many", "commas"]
+/// |> list.map(from_string)
+/// |> concat_join([from_string(","), space])
+/// |> to_string(80)
+/// // -> "wow, so, many, commas"
 /// ```
 /// 
 pub fn concat_join(
@@ -136,8 +131,8 @@ pub fn concat_join(
 /// ## Examples
 /// 
 /// ```gleam
-/// > empty |> to_string(80)
-/// ""
+/// empty |> to_string(80)
+/// // -> ""
 /// ```
 /// 
 pub const empty: Document = Concat([])
@@ -149,13 +144,13 @@ pub const empty: Document = Concat([])
 /// ## Examples
 /// 
 /// ```gleam
-/// > [from_string("pretty"), break("•", "↩"), from_string("printed")]
-/// > |> concat
-/// > |> force_break
-/// > |> group
-/// > |> to_string(100)
-/// "pretty↩
-/// printed"
+/// [from_string("pretty"), break("•", "↩"), from_string("printed")]
+/// |> concat
+/// |> force_break
+/// |> group
+/// |> to_string(100)
+/// // -> "pretty↩
+/// // printed"
 /// ```
 /// 
 pub fn force_break(doc: Document) -> Document {
@@ -167,8 +162,8 @@ pub fn force_break(doc: Document) -> Document {
 /// ## Examples
 /// 
 /// ```gleam
-/// > "doc" |> from_string |> to_string(80)
-/// "doc"
+/// "doc" |> from_string |> to_string(80)
+/// // -> "doc"
 /// ```
 /// 
 pub fn from_string(string: String) -> Document {
@@ -193,26 +188,26 @@ pub fn from_string(string: String) -> Document {
 /// ## Examples
 /// 
 /// ```gleam
-/// > let food =
-/// >   ["lasagna", "ravioli", "pizza"]
-/// >   |> list.map(from_string) |> join(with: space) |> group
-/// > let message = 
-/// >   [from_string("Food I love:"), space, food] |> concat |> group
+/// let food =
+///   ["lasagna", "ravioli", "pizza"]
+///   |> list.map(from_string) |> join(with: space) |> group
+/// let message = 
+///   [from_string("Food I love:"), space, food] |> concat |> group
 /// 
-/// > message |> to_string(80)
-/// "Food I love: lasagna ravioli pizza"
+/// message |> to_string(80)
+/// // -> "Food I love: lasagna ravioli pizza"
 /// 
-/// > message |> to_string(30)
-/// "Food I love:
-/// lasagna ravioli pizza"
-/// // ^-- After splitting the aouter group, the inner one can fit
+/// message |> to_string(30)
+/// // -> "Food I love:
+/// // lasagna ravioli pizza"
+/// // ^-- After splitting the outer group, the inner one can fit
 /// //     on a single line so the pretty printer does not split it
 /// 
-/// > message |> to_string(20)
-/// "Food I love:
-/// lasagna
-/// ravioli
-/// pizza"
+/// message |> to_string(20)
+/// // "Food I love:
+/// // lasagna
+/// // ravioli
+/// // pizza"
 /// // ^-- Even after splitting the outer group, the inner one wouldn't
 /// //     fit on a single line, so the pretty printer splits that as well
 /// ```
@@ -227,13 +222,13 @@ pub fn group(doc: Document) -> Document {
 /// ## Examples
 /// 
 /// ```gleam
-/// > let message =
-/// >   ["Gleam", "is", "fun!"]
-/// >   |> list.map(from_string)
-/// >   |> join(with: space)
+/// let message =
+///   ["Gleam", "is", "fun!"]
+///   |> list.map(from_string)
+///   |> join(with: space)
 /// 
-/// > message |> to_string(80)
-/// "Gleam is fun!"
+/// message |> to_string(80)
+/// // -> "Gleam is fun!"
 /// ```
 /// 
 pub fn join(docs: List(Document), with separator: Document) -> Document {
@@ -245,8 +240,8 @@ pub fn join(docs: List(Document), with separator: Document) -> Document {
 /// ## Examples
 /// 
 /// ```gleam
-/// > line |> to_string(80)
-/// "\n"
+/// line |> to_string(80)
+/// // -> "\n"
 /// ```
 pub const line: Document = Line(1)
 
@@ -255,8 +250,8 @@ pub const line: Document = Line(1)
 /// ## Examples
 /// 
 /// ```gleam
-/// > lines(3) |> to_string(80)
-/// "\n\n\n"
+/// lines(3) |> to_string(80)
+/// // -> "\n\n\n"
 /// ```
 /// 
 pub fn lines(size: Int) -> Document {
@@ -271,16 +266,16 @@ pub fn lines(size: Int) -> Document {
 /// ## Examples
 /// 
 /// ```gleam
-/// > let one = [space, from_string("one")] |> concat |> nest(by: 1)
-/// > let two = [space, from_string("two")] |> concat |> nest(by: 2)
-/// > let three = [space, from_string("three")] |> concat |> nest(by: 3)
-/// > let list = [from_string("list:"), one, two, three] |> concat |> group
+/// let one = [space, from_string("one")] |> concat |> nest(by: 1)
+/// let two = [space, from_string("two")] |> concat |> nest(by: 2)
+/// let three = [space, from_string("three")] |> concat |> nest(by: 3)
+/// let list = [from_string("list:"), one, two, three] |> concat |> group
 /// 
-/// > list |> to_string(10)
-/// "list:
-///  one
-///   two
-///    three"
+/// list |> to_string(10)
+/// // -> "list:
+/// //  one
+/// //   two
+/// //    three"
 /// ```
 ///
 pub fn nest(doc: Document, by indentation: Int) -> Document {
@@ -292,10 +287,10 @@ pub fn nest(doc: Document, by indentation: Int) -> Document {
 /// ## Examples
 /// 
 /// ```gleam
-/// > from_string("printed!")
-/// > |> prepend(from_string("pretty "))
-/// > |> to_string(80)
-/// "pretty printed!"
+/// from_string("printed!")
+/// |> prepend(from_string("pretty "))
+/// |> to_string(80)
+/// // -> "pretty printed!"
 /// ```
 /// 
 pub fn prepend(to first: Document, doc second: Document) -> Document {
@@ -312,10 +307,10 @@ pub fn prepend(to first: Document, doc second: Document) -> Document {
 /// ## Examples
 /// 
 /// ```gleam
-/// > from_string("fun!")
-/// > |> prepend_docs([from_string("Gleam "), from_string("is ")])
-/// > |> to_string(80)
-/// "Gleam is fun!"
+/// from_string("fun!")
+/// |> prepend_docs([from_string("Gleam "), from_string("is ")])
+/// |> to_string(80)
+/// // -> "Gleam is fun!"
 /// ```
 /// 
 pub fn prepend_docs(first: Document, docs: List(Document)) -> Document {
@@ -330,14 +325,14 @@ pub fn prepend_docs(first: Document, docs: List(Document)) -> Document {
 /// ## Examples
 /// 
 /// ```gleam
-/// > let doc = [from_string("soft"), soft_break, from_string("break")]
+/// let doc = [from_string("soft"), soft_break, from_string("break")]
 /// 
-/// > doc |> to_string(80)
-/// "softbreak"
+/// doc |> to_string(80)
+/// // -> "softbreak"
 /// 
-/// > doc |> to_string(5)
-/// "soft
-/// break"
+/// doc |> to_string(5)
+/// // -> "soft
+/// // break"
 /// ```
 /// 
 pub const soft_break: Document = Break("", "")
@@ -350,17 +345,17 @@ pub const soft_break: Document = Break("", "")
 /// ## Examples
 /// 
 /// ```gleam
-/// > let doc =
-/// >   ["pretty", "printed"]
-/// >   |> list.map(from_string)
-/// >   |> join(with: space)
+/// let doc =
+///   ["pretty", "printed"]
+///   |> list.map(from_string)
+///   |> join(with: space)
 /// 
-/// > doc |> to_string(80)
-/// "pretty printed"
+/// doc |> to_string(80)
+/// // -> "pretty printed"
 /// 
-/// > doc |> to_string(10)
-/// "pretty
-/// printed"
+/// doc |> to_string(10)
+/// // -> "pretty
+/// // printed"
 /// ```
 /// 
 pub const space: Document = Break(" ", "")
@@ -383,11 +378,10 @@ pub const space: Document = Break(" ", "")
 /// 
 /// For some examples on how pretty printing works for each kind of document you
 /// can have a look at the package documentation.
-/// 
-/// There's also full fledged tutorial, you can start from the
-/// [introductory one](TODO)
-/// and work your way up to implementing a
-/// [JSON pretty printer](TODO).
+/// There's also a
+/// [step by step tutorial](https://hexdocs.pm/glam/01_gleam_lists)
+/// that will guide you through the implementation of a simple pretty printer,
+/// covering most of the glam api.
 /// 
 pub fn to_string(doc: Document, width: Int) -> String {
   to_string_builder(doc, width)
