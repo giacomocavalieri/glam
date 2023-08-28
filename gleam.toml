@@ -1,18 +1,10 @@
 name = "glam"
-version = "0.1.0"
-description = "A Gleam project"
+version = "1.0.0"
+description = "A package to help you easily pretty print structured data"
 
-# Fill out these fields if you intend to generate HTML documentation or publish
-# your project to the Hex package manager.
-#
-# licences = ["Apache-2.0"]
-# repository = { type = "github", user = "username", repo = "project" }
-# links = [{ title = "Website", href = "https://gleam.run" }]
-
-internal_modules = [
-  "examples",
-  "examples/*",
-]
+licences = ["Apache-2.0"]
+repository = { type = "github", user = "username", repo = "project" }
+internal_modules = ["examples", "examples/*"]
 
 [dependencies]
 gleam_stdlib = "~> 0.30"
