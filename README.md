@@ -19,10 +19,10 @@ gleam add glam
 ## Pretty printing
 
 When working with structured data (like JSON, XML, lists, ASTs, ...) it can
-be useful to print those.
-One could go the quick and dirty way and just `string.inspect` the data
-structure and call it a day. However, the result would hardly be readable for
-complex data structures.
+be useful to print it in a nice and tidy way.
+Of course, one could go the quick and dirty way and just `string.inspect`
+the data structure and call it a day.
+However, the result would hardly be readable for complex data structures.
 
 On the other hand, hand writing a pretty printing function can be quite
 difficult (I sure have spent my fair share of time writing those) and error
@@ -37,7 +37,7 @@ limits and indentation.
 ## Getting started
 
 If you want to get started with glam, a great starting point is the
-[introductory tutorial](https://hexdocs.pm/glam/01_gleam_lists) which will guide
+[introductory tutorial](https://hexdocs.pm/glam/01_gleam_lists.html) which will guide
 you step by step in writing a pretty printer for lists.
 
 By the end of the tutorial you'll know most of the package's API and you'll have

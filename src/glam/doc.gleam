@@ -379,7 +379,7 @@ pub const space: Document = Break(" ", "")
 /// For some examples on how pretty printing works for each kind of document you
 /// can have a look at the package documentation.
 /// There's also a
-/// [step by step tutorial](https://hexdocs.pm/glam/01_gleam_lists)
+/// [step by step tutorial](https://hexdocs.pm/glam/01_gleam_lists.html)
 /// that will guide you through the implementation of a simple pretty printer,
 /// covering most of the glam api.
 /// 
