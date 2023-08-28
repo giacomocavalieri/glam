@@ -423,10 +423,6 @@ food_i_love
 //   pizza
 ```
 
-> If you want a more in-depth tutorial on how nesting works you can loot at the
-> [todo-list tutorial](TODO:) which shows an in-depth example that is more
-> focused on groups and nesting
-
 Now we can add nesting to the `pretty_list` document:
 
 ```gleam
@@ -639,11 +635,8 @@ We've also used some utility methods like:
 - `doc.prepend` to prepend a document to an existing one
 - `doc.append` to append a document to an existing one
 
-But there's still a lot more to discover if you're interested in pretty
-printing and want to tackle bigger, more complex problems!
-You can look into the [JSON pretty printing example](TODO) or the
-[todo list pretty printing example](TODO) to get a deeper understanding of
-nesting and find out about other nice utility methods the package has to offer.
+If you want more examples you can have a look at the `examples` folder in the
+glam repo.
 
 ---
 
