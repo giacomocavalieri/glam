@@ -142,3 +142,13 @@ pub fn prepend_docs_test() {
   |> doc.to_string(80)
   |> should.equal("Gleam is fun!")
 }
+
+pub fn flex_break_test() {
+  ["1", "2", "3", "4", "5", "6"]
+  |> list.map(doc.from_string)
+  |> doc.join(with: doc.flex_break("", ""))
+  |> doc.group
+  |> doc.to_string(4)
+  |> should.equal("1234\n56")
+  // TODO: add more tests
+}
