@@ -28,7 +28,7 @@ fn comma() -> Document {
 /// - strings are surrounded by quotes
 /// - null is printed as "null"
 /// - arrays are split on newlines only if they cannot fit on one
-/// - the same applies for objects
+/// - the same applies to objects
 /// 
 /// ## Examples
 /// 
