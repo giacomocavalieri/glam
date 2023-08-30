@@ -150,5 +150,43 @@ pub fn flex_break_test() {
   |> doc.group
   |> doc.to_string(4)
   |> should.equal("1234\n56")
-  // TODO: add more tests
+
+  ["Gleam", "is", "really", "fun!"]
+  |> list.map(doc.from_string)
+  |> doc.join(with: doc.flex_space)
+  |> doc.group
+  |> doc.to_string(8)
+  |> should.equal("Gleam is\nreally\nfun!")
+}
+
+pub fn flex_break_with_group_and_nesting_test() {
+  let numbers =
+    ["1", "2", "3", "4", "5"]
+    |> list.map(doc.from_string)
+    |> doc.join(with: doc.flex_break(", ", ","))
+    |> doc.nest(by: 2)
+    |> doc.group
+
+  let list =
+    [
+      doc.from_string("["),
+      doc.nest(doc.soft_break, by: 2),
+      numbers,
+      doc.break("", ","),
+      doc.from_string("]"),
+    ]
+    |> doc.concat
+    |> doc.group
+
+  doc.to_string(list, 15)
+  |> should.equal("[1, 2, 3, 4, 5]")
+
+  doc.to_string(list, 13)
+  |> should.equal("[\n  1, 2, 3, 4,\n  5,\n]")
+
+  doc.to_string(list, 10)
+  |> should.equal("[\n  1, 2, 3,\n  4, 5,\n]")
+
+  doc.to_string(list, 1)
+  |> should.equal("[\n  1,\n  2,\n  3,\n  4,\n  5,\n]")
 }
