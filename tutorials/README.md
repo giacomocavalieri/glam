@@ -16,14 +16,17 @@ I suggest you work through the tutorials in this order:
   most of the package API. There's also a
   [live stream I did](https://www.youtube.com/watch?v=jxrxr9lH088)
 - [Pretty printing TODO lists](https://hexdocs.pm/glam/pretty_printing_todo_lists.html):
-  this tutorial goes deeper into the topic of nesting and introduces some
-  neat functions that were omitted in the first tutorial
+  this tutorial goes deeper into how nesting works, and introduces another
+  neat function that was omitted in the first tutorial
 - [Pretty printing JSON](https://hexdocs.pm/glam/pretty_printing_JSON.html):
   this tutorial walks through the implementation of a JSON pretty printer. It
   won't introduce any new concepts, but it can be a nice exercise to hone your
   pretty printing skills
-- []():
-  TODO: flex_break
+- [Pretty printing lovely error messages]():
+  this tutorial will walk you through the implementation of a pretty printer for
+  the error messages of a made-up programming language. You'll learn about
+  another function that was omitted in the introductory tutorial that can help
+  you easily build beautiful pretty printers
 
 ## Full code examples
 
