@@ -65,7 +65,7 @@ let them guide you:
 
 ```gleam
 pub fn pretty_list(list: List(String)) -> Document {
-  todo("Write an amazing pretty printer")
+  todo as "Write an amazing pretty printer"
 }
 ```
 
@@ -109,7 +109,7 @@ pub fn pretty_list(list: List(String)) -> Document {
   let list_item_to_document = fn(item) { doc.from_string("\"" <> item <> "\"") }
   let docs = list.map(list, list_item_to_document)
 
-  todo("Still not enough...")
+  todo as "Still not enough..."
 }
 ```
 
