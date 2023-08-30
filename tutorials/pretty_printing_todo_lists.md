@@ -71,4 +71,248 @@ The TODO list I've just shown you would look like this:
 - [ ] get some sleep
 ```
 
-## 
+## A mostly wrong implementation
+
+We need to find a way to turn a `TodoList` into a `Document` so that Glam will
+be able to pretty print it for us. The function we're looking for looks like
+this:
+
+```gleam
+fn tasks_to_doc(tasks: TodoList) -> Document {
+  todo as "Write an amazing pretty printer"
+}
+```
+
+We can turn this problem into something more approachable by tackling first the
+pretty printing of a single task:
+
+```gleam
+fn task_to_doc(task: Task) -> Document {
+  todo as "Another amazing pretty printer"
+}
+```
+
+With this definition it's quite straightforward to implement a
+_mostly_ correct (more on this later) `tasks_to_doc`:
+
+```gleam
+fn tasks_to_doc(tasks: TodoList) -> Document {
+  list.map(tasks, task_to_doc)
+  |> doc.join(with: doc.soft_break)
+}
+```
+
+### Pretty printing a task
+
+We just have to pretty print a task. If you have already followed along the
+introductory tutorial this shouldn't be too complicated.
+We first have to create the appropriate bullet point according to the task's
+status:
+
+```gleam
+fn status_to_bullet(status: Status) -> String {
+  case status {
+    Todo -> "- [ ]"
+    Done -> "- [X]"
+    InProgress -> "- […]"
+  }
+}
+```
+
+Now we're ready to turn a task into a document:
+
+```gleam
+fn task_to_doc(task: Task) -> Document {
+  let task_line = status_to_bullet(task.status) <> " " <> task.description
+  let task_doc = doc.from_string(task_line)
+  
+  todo as "Bear with me a little longer..."
+}
+```
+
+And we can handle the subtasks with a recursive call to `tasks_to_doc`:
+
+```gleam
+fn task_to_doc(task: Task) -> Document {
+  let task_line = status_to_bullet(task.status) <> " " <> task.description
+  let task_doc = doc.from_string(task_line)
+
+  case list.is_empty(tasks.subtasks) {
+    True -> task_doc
+    False ->
+      [task_doc, doc.soft_break, docs_to_task(task.subtasks)]
+      |> doc.concat
+  }
+}
+```
+
+When the task has no more subtasks we just return its line, otherwise we join it
+with a `doc.soft_break` (we covered that in the introductory tutorial) with the
+document obtained from its subtasks.
+
+Let's try this out and see how a TODO list is pretty printed:
+
+```gleam
+[
+  Task(Todo, "groceries", [
+    Task(Todo, "lentils", [])
+    Task(Todo, "carrots", [])
+  ])
+]
+|> tasks_to_doc
+|> doc.to_string(10_000)
+// -> - [ ] groceries- [ ] lentils- [ ] carrots
+```
+
+Looks like everything ended up on a single line. What we wanted was to get a
+task per line, no matter how wide it is.
+
+The problem is that, when the pretty printer has to deal with a `doc.soft_break`
+(or any other kind of `break`), only splits it if the group it belongs to
+doesn't fit on a single line. If, like in this example, we provide the pretty
+printer enough space, it will gladly keep everything on a single line!
+
+There is a quick and dirty solution: just trick the pretty printer and use 0 as
+the maximum width. Then, the pretty printer will always split every single
+group it runs into:
+
+```gleam
+[
+  Task(Todo, "first", []),
+  Task(Todo, "second", []),
+]
+|> tasks_to_doc
+|> doc.to_string(0)
+// ->
+// - [ ] first
+// - [ ] second
+```
+
+While this works for such a simple example, the problem with this approach is
+that it breaks down quite easily for more complex documents: imagine you had
+only a portion of the document that you wanted to always break; by setting the
+line width to 0 you're going to always break _every single group_ making up the
+document.
+
+## Forcing a break
+
+There's a better way to force the pretty printer to always break a given break:
+that's the function `doc.force_break`: it takes a document as input and forces
+the pretty printer to always break the `doc.break` it is made of:
+
+```gleam
+let example = 
+  ["first", "second"]
+  |> list.map(doc.from_string)
+  |> doc.join(with: doc.space)
+  |> doc.force_break
+
+doc.to_string(example, 10_000)
+// ->
+// first
+// second
+```
+
+As you can see, despite having plenty of room to fit both `"first"` and
+`"second"` on a single line, the pretty printer was forced to break the space.
+
+There's a detail to pay attention to: `doc.force_break` _does not work on_
+_groups_! The pretty printer will always try to first fit a group onto a single
+line, ignoring any `doc.force_break` wrapping it:
+
+```gleam
+let example =
+  ["first", "second"]
+  |> list.map(doc.from_string)
+  |> doc.join(with: doc.space)
+  |> doc.group
+  |> doc.force_break
+
+doc.to_string(example, 10_000)
+// -> first second
+```
+
+Simply wrapping everything in a `doc.group` _before_ calling `doc.force_break`
+renders it useless: the pretty printer will simply ignore it and treat the group
+as it usually would.
+
+### Fixing the TODO list pretty printer
+
+We can take advantage of break to nicely tell the pretty printer to always split
+the items on newlines. The required change is minimal:
+
+```gleam
+fn tasks_to_doc(tasks: TodoList) -> Document {
+  list.map(tasks, task_to_doc)
+  |> doc.join(with: doc.soft_break)
+  |> doc.force_break
+}
+```
+
+Simply wrapping the resulting `Document` in a `doc.force_break` is enough to
+make sure the pretty printer always ends up splitting the `doc.soft_break` we
+used to join the tasks.
+
+Let's have a look at the pretty printed list now:
+
+```gleam
+[
+  Task(Todo, "groceries", [
+    Task(Todo, "lentils", [])
+    Task(Todo, "carrots", [])
+  ])
+]
+|> tasks_to_doc
+|> doc.to_string(10_000)
+// ->
+// - [ ] groceries
+// - [ ] lentils
+// - [ ] carrots
+```
+
+Almost perfect! We just need to indent the subtasks to make this look as we
+wanted.
+
+## Nesting subtasks
+
+As we've already seen in the introductory tutorial, we can use `doc.nest` to
+increase the padding added after each newline inserted by the pretty printer.
+
+Once again the code change to make our function work as intended is minimal:
+
+```gleam
+fn task_to_doc(task: Task) -> Document {
+  let task_line = status_to_bullet(task.status) <> " " <> task.description
+  let task_doc = doc.from_string(task_line)
+
+  case list.is_empty(tasks.subtasks) {
+    True -> task_doc
+    False ->
+      [task_doc, doc.soft_break, docs_to_task(task.subtasks)]
+      |> doc.concat
+      |> doc.nest(by: 2)
+  }
+}
+```
+
+One nice thing about `doc.nest` is that it _increases_ the nesting level of the
+document. This means that, any other nesting that comes before it is
+automatically increased by the same amount.
+That's why this small change is enough to deal with deeply nested task lists
+and each sublist is going to be nested at the right level.
+
+If we now call `tasks_to_doc` on the TODO list I showed you at the beginning of
+the tutorial what we get is:
+
+```gleam
+tasks_to_doc(todo_list)
+|> doc.to_string(10_000)
+// ->
+// - […] publish Glam v1.1.0
+//   - […] write a tutorial on todo lists
+//   - […] add `doc.flex_break`
+//     - [X] add the appropriate type variant
+//     - [X] implement the missing cases
+//     - [ ] add some tests
+// - [ ] get some sleep
+```
