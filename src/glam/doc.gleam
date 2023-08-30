@@ -205,7 +205,7 @@ pub fn flex_break(unbroken: String, broken: String) -> Document {
 pub const flex_space: Document = FlexBreak(" ", "")
 
 /// Forces the pretty printer to break all the `break`s of the outermost
-/// document. This still has no effect on `group`s as the pretty printer will
+/// document. This still _has no effect on `group`s_ as the pretty printer will
 /// always try to put them on a single line before splitting them.
 /// 
 /// ## Examples
