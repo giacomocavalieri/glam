@@ -14,5 +14,8 @@ gleeunit = "~> 0.10"
 
 [documentation]
 pages = [
-  { title = "A step by step introduction", path = "01_gleam_lists.html", source = "./tutorials/01_gleam_lists.md" },
+  { title = "Learning materials", path = "learning_materials.html", source = "./tutorials/README.md" },
+  { title = "", path = "pretty_printing_glamorous_lists.html", source = "./tutorials/pretty_printing_glamorous_lists.md" },
+  { title = "", path = "pretty_printing_todo_lists.html", source = "./tutorials/pretty_printing_todo_lists.md" },
+  { title = "", path = "pretty_printing_JSON.html", source = "./tutorials/pretty_printing_JSON.md" },
 ]

@@ -1,4 +1,4 @@
-# Pretty printing glamorous lists ✨
+# Pretty printing glamorous lists
 
 ## Goals
 
