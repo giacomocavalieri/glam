@@ -4,7 +4,7 @@ import gleam/list
 import gleam/string
 import glam/doc.{Document}
 
-/// Pretty print a list of strings:
+/// Pretty prints a list of strings:
 /// - each string is surrounded by quotes
 /// - each string is separated by a comma and a space
 /// - if the list does not fit on one line each one of its items should be on

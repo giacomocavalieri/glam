@@ -24,12 +24,12 @@ Of course, one could go the quick and dirty way and just `string.inspect`
 the data structure and call it a day.
 However, the result would hardly be readable for complex data structures.
 
-On the other hand, hand writing a pretty printing function can be quite
-difficult (I sure have spent my fair share of time writing those) and error
-prone: there's a lot of moving pieces to juggle and its easy for bugs to sneak
-in.
+On the other hand, handwriting a pretty printing function can be quite
+difficult (I sure have spent my fair share of time writing those) and
+error-prone: there are a lot of moving pieces to juggle and it's easy for bugs
+to sneak in.
 
-A pretty printing package like glam provides some basic building block to
+A pretty printing package like Glam provides some basic building blocks to
 _describe_ the structure of your data and takes care of the heavy lifting of
 actually finding the best layout to format the data, gracefully handling line
 limits and indentation.
@@ -37,8 +37,8 @@ limits and indentation.
 ## Getting started
 
 If you want to get started with glam, a great starting point is the
-[introductory tutorial](https://hexdocs.pm/glam/01_gleam_lists.html) which will guide
-you step by step in writing a pretty printer for lists.
+[introductory tutorial](https://hexdocs.pm/glam/01_gleam_lists.html) which will
+guide you step by step in writing a pretty printer for lists.
 
 By the end of the tutorial you'll know most of the package's API and you'll have
 implemented a function that can nicely display lists like this:

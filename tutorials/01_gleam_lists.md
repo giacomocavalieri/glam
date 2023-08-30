@@ -3,15 +3,15 @@
 ## Goals
 
 The goal of this tutorial is to get you started on pretty printing with the
-glam package introducing its API a step at a time.
+Glam package introducing its API a step at a time.
 
-As a running example we're going to write a pretty printer for lists of strings.
+As a running example, we're going to write a pretty printer for lists of strings.
 There are three rules we want our pretty printer to follow:
 
 - If a list is shorter than the maximum allowed line width, it is kept on
   a single line
 - If it is longer than the maximum line width, each element is placed on a new
-  line and is indented by two spaces; in addition the last element has a
+  line and is indented by two spaces; in addition, the last element has a
   trailing comma
 - All strings are surrounded by double quotes `"`
 
@@ -30,7 +30,7 @@ example:
 ]
 ```
 
-Now that we have a clear picture of what a pretty printed lists should look
+Now that we have a clear picture of what a pretty-printed list should look
 like we can dive deep into the wonders of pretty printing!
 
 ## Setup
@@ -50,7 +50,7 @@ gleam add glam          # add the `glam` package to the project's dependencies
 > [Gleam's Exercism track]((https://exercism.org/tracks/gleam/concepts)).
 > It's a great resource to get started!
 
-First things first, you can import the glam package in your project's
+First things first, you can import the Glam package in your project's
 modules like this:
 
 ```gleam
@@ -73,19 +73,19 @@ The first thing you can notice is that the pretty printing function's return
 type is `Document`. But wait, weren't we supposed to pretty print the list?
 Why isn't the function returning a `String`?
 
-Here is a crucial point of how the glam package handles pretty printing:
+Here is a crucial point of how the Glam package handles pretty printing:
 you can _describe_ the structure of the text to pretty print with some basic
-building blocks, and glam will do the heavy lifting of trying to find the
+building blocks, and Glam will do the heavy lifting of trying to find the
 best layout for you.
 As you may have guessed those building blocks are `Document`s.
 
-As long as you can turn something into a `Document`, glam will pretty print it
+As long as you can turn something into a `Document`, Glam will pretty print it
 for you. Quite neat, isn't it?
 
 ### A naive approach
 
 First of all, we need a way to create a `Document` from a `String`,
-luckily glam has got us covered with the `doc.from_string` function which does
+luckily Glam has got us covered with the `doc.from_string` function which does
 exactly that:
 
 ```gleam
@@ -115,7 +115,7 @@ pub fn pretty_list(list: List(String)) -> Document {
 
 `docs` is a list of documents but in order to be printed with `doc.to_string`
 it needs to be turned into a single `Document`.
-To do that we can use the `doc.concat` funtion which takes a list of documents
+To do that we can use the `doc.concat` function which takes a list of documents
 as input and joins them together into a single document:
 
 ```gleam
@@ -176,9 +176,9 @@ pub fn main() {
 
 We would expect the list to be split on multiple lines like in the example I
 showed you at the beginning of the tutorial.
-It looks like `doc.concat` is not enough to create beautiful documents. In the
-next section we'll discover more building blocks that can get us closer to a
-pretty printed list.
+It looks like `doc.concat` is not enough to create beautiful documents.
+In the next section we'll discover more building blocks that can get us closer
+to a pretty printed list.
 
 ### A less naive approach
 
@@ -243,7 +243,7 @@ newline.
 Before going back to our list pretty printer we should experiment a little bit
 more with `doc.group` and `doc.space`.
 
-In particular there's a little detail I omitted in my first explanation of how
+In particular, there's a little detail I omitted in my first explanation of how
 group formatting works. Let's see how the pretty printer deals with nested
 groups:
 
@@ -302,17 +302,17 @@ food_i_love |> doc.to_string(30)
 - In the first example we gave the document enough space to fit on a single
   line, all spaces get rendered as a normal whitespace and everything ends up on
   a single line
-- In the second example the line width is quite small: neither the outer, nor
+- In the second example the line width is quite small: neither the outer nor
   the inner document could fit on a single line so all spaces become newlines
 - The most interesting example is the third one where the outer group is split
   while the inner is not.
-  What end up happening in the pretty process could be described like this:
+  What ends up happening in the pretty process could be described like this:
   - The pretty printer first tries to render everything on a single line but
     the resulting document would exceed the maximum width of 30 chars
   - So it decides to split the outer group and its space gets rendered as a
     newline
   - On the new line the pretty printer tries to render the inner document
-    and it fits just right! So it's spaces, contrary to what happened to those
+    and it fits just right! So its spaces, contrary to what happened to those
     of the outer group, are not turned into newlines
 
 So when the pretty printer ends up breaking a group it may still not break the
@@ -387,7 +387,7 @@ pretty_list(["Gleam", "is", "fun!"]) |> doc.to_string(10)
 // ]
 ```
 
-We're getting there! There's just a couple of things we need to fix before
+We're getting there! There are just a couple of things we need to fix before
 calling it a day:
 
 - The list items should be indented by two spaces
@@ -398,7 +398,7 @@ calling it a day:
 
 ## Nesting things
 
-To solve the first problem, we need to add a some nesting whitespace whenever
+To solve the first problem, we need to add some nesting whitespace whenever
 a space is turned into a newline. In order to do so we can use the `doc.nest`
 function:
 
@@ -407,7 +407,7 @@ doc.nest(my_document, by: 2)
 ```
 
 This tells the pretty printer that, whenever it renders a space as a newline
-when formatting `my_document` it sould also indent it by two spaces.
+when formatting `my_document` it should also indent it by two spaces.
 Let's get back to the `food_i_love` example and see how the rendering changes
 by adding a nesting of two spaces:
 
@@ -488,7 +488,7 @@ after the square brackets:
 ]
 ```
 
-Both problema can be solved by introducing a new powerful document constructor:
+Both problems can be solved by introducing a new powerful document constructor:
 `doc.break`.
 
 Up until now `doc.space` was the only document that the pretty printer could
@@ -499,14 +499,14 @@ more general version of `doc.space`. Here is how it can be called:
 doc.break("unbroken", "broken")
 ```
 
-- It's first argument is the string that will be displayed if the pretty
+- Its first argument is the string that will be displayed if the pretty
   printer decides not to break the document
-- It's second argument is the string that will be displayed if the pretty
+- Its second argument is the string that will be displayed if the pretty
   printer decides to break the document _before_ inserting a newline
 
 ### The pretty printing algorithm
 
-This description of `doc.break` may sound a bit hand wavy so, to clear things
+This description of `doc.break` may sound a bit hand-wavy so, to clear things
 up, let's have a final look at how the formatting of documents actually works:
 
 - The pretty printer always tries to put a group onto a single line by treating
@@ -542,7 +542,7 @@ its breaks are displayed as `"↩"`; if it is not broken they are displayed as
 `"•"`.
 
 > `doc.space` can actually be defined in terms of `doc.break` (and that's how
-> it is defined in glam!) as `doc.break(" ", "")`:
+> it is defined in Glam!) as `doc.break(" ", "")`:
 >
 > - if the group is not broken we render a single whitespace
 > - if the group gets broken we do not render anything and let the pretty
@@ -550,9 +550,9 @@ its breaks are displayed as `"↩"`; if it is not broken they are displayed as
 
 ### Back to lists one last time
 
-Thanks to break we can solve both our remaining problems: first of all we want
-to disaply a trailing comma after the last element _only if_ the list is split
-onto multiple lines:
+Thanks to `doc.break` we can solve both our remaining problems: first of all we
+want to display a trailing comma after the last element _only if_ the list is
+split onto multiple lines:
 
 ```gleam
 let trailing_comma = break("", ",")
@@ -586,10 +586,10 @@ the open bracket. The perfect fit for this job is once again `doc.break`:
 let soft_break = doc.break("", "")
 ```
 
-`soft_break` will never be rendered, it's only purpose it to act as a possible
+`soft_break` will never be rendered, its only purpose is to act as a possible
 breaking point for the pretty printer to split a group on multiple lines.
 
-Since `soft_break` can be useful in a lot of different settings, the glam
+Since `soft_break` can be useful in a lot of different settings, the Glam
 package already exposes it as a constant so that you do not have to redefine it
 every time you need it:
 
@@ -616,18 +616,18 @@ And that's it, the pretty printer is complete!
 
 ## Recap
 
-Phew! That was quite a long tutorial so give yourself a pat in the back and
+Phew! That was quite a long tutorial so give yourself a pat on the back and
 enjoy the beautifully pretty printed lists.
 
-We covered most of the glam API and got an understanding of how each piece can
+We covered most of the Glam API and got an understanding of how each piece can
 influence the pretty printing process:
 
 - `doc.from_string` to generate documents from strings
-- `doc.concat` to join together bunch of documents
+- `doc.concat` to join together a bunch of documents
 - `doc.group` and `doc.space` to allow the pretty printer to split documents
 - `doc.nest` to nest documents when the pretty printer decides to split them
 - `doc.break` to conditionally render strings depending if their group gets
-  splitted or not
+  split or not
 
 We've also used some utility methods like:
 
@@ -637,12 +637,12 @@ We've also used some utility methods like:
 
 If you want more examples you can have a look at the
 [`examples`](https://github.com/giacomocavalieri/glam/tree/main/src/examples)
-folder in the glam repo.
+folder in the Glam repo.
 
 ---
 
-Thanks for following along! If you spot any spelling mistake, wrong code
-snippets or there are parts that are not clear, please let me know!
+Thanks for following along! If you spot any spelling mistakes, wrong code
+snippets or some parts that are not clear, please let me know!
 
 Your feedback really means a lot to me so don't be scared to reach out!
 My Twitter handle is [@giacomo_cava](https://twitter.com/giacomo_cava) and I

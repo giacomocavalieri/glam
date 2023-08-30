@@ -2,7 +2,7 @@ import gleam/list
 import gleam/string
 import gleam/string_builder.{StringBuilder}
 
-/// A document that can be pretty printed with `to_string`.
+/// A document that can be pretty-printed with `to_string`.
 /// 
 pub opaque type Document {
   Line(size: Int)
@@ -54,8 +54,8 @@ pub fn append_docs(first: Document, docs: List(Document)) -> Document {
   append(to: first, doc: concat(docs))
 }
 
-/// A document after which the pretty printer can insert a newline.
-/// A newline is added after a `break` document if the `group` it is part of
+/// A document after which the pretty printer can insert a new line.
+/// A newline is added after a `break` document if the `group` it's part of
 /// could not be rendered on a single line.
 /// 
 /// If the pretty printer decides to add a newline after `break` it will be
@@ -127,7 +127,7 @@ pub fn concat_join(
   join(docs, concat(separators))
 }
 
-/// An empty document that is printed as the empty string.
+/// An empty document that is printed as an empty string.
 /// 
 /// ## Examples
 /// 
@@ -248,7 +248,7 @@ pub fn from_string(string: String) -> Document {
 /// inside that group are rendered as their second argument and immediately
 /// followed by a newline.
 /// 
-/// Any nested group is considered on its own and may or may not be splitted,
+/// Any nested group is considered on its own and may or may not be split,
 /// depending if it fits on a single line or not. So, even if the outermost
 /// group is broken, its nested groups may still end up on a single line.
 /// 
@@ -302,7 +302,7 @@ pub fn join(docs: List(Document), with separator: Document) -> Document {
   concat(list.intersperse(docs, separator))
 }
 
-/// A document that is always printed as a single newline.
+/// A document that is always printed as a single new line.
 /// 
 /// ## Examples
 /// 
@@ -428,7 +428,7 @@ pub const soft_break: Document = Break("", "")
 pub const space: Document = Break(" ", "")
 
 /// Turns a document into a pretty printed string.
-/// The pretty printed process can be thought as follows:
+/// The pretty printed process can be thought of as follows:
 /// - the pretty printer first tries to print every group on a single line
 /// - all the `break` documents are rendered as their first argument
 /// - if the string fits on the specified width this is the result
@@ -438,17 +438,17 @@ pub const space: Document = Break(" ", "")
 ///   - a padding of the given nesting level is added after every inserted
 ///     newline
 ///   - all inner groups are then considered on their own: the splitting of the
-///     outermost group does not imply that the inner gruops will be split as
+///     outermost group does not imply that the inner groups will be split as
 ///     well
 /// 
 /// ## Examples
 /// 
-/// For some examples on how pretty printing works for each kind of document you
+/// For some examples of how pretty printing works for each kind of document you
 /// can have a look at the package documentation.
 /// There's also a
-/// [step by step tutorial](https://hexdocs.pm/glam/01_gleam_lists.html)
+/// [step-by-step tutorial](https://hexdocs.pm/glam/01_gleam_lists.html)
 /// that will guide you through the implementation of a simple pretty printer,
-/// covering most of the glam api.
+/// covering most of the Glam API.
 /// 
 pub fn to_string(doc: Document, width: Int) -> String {
   to_string_builder(doc, width)
@@ -528,7 +528,7 @@ fn do_format(
           |> string_builder.append(indentation(indent))
           |> do_format(max_width, indent, rest)
 
-        // Flex break ignore the current mode and are always reevaluated
+        // Flex breaks ignore the current mode and are always reevaluated
         FlexBreak(unbroken: unbroken, broken: broken) -> {
           let new_unbroken_width = current_width + string.length(unbroken)
           case fits(rest, max_width, new_unbroken_width) {
