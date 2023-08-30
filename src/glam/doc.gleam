@@ -310,6 +310,7 @@ pub fn join(docs: List(Document), with separator: Document) -> Document {
 /// line |> to_string(80)
 /// // -> "\n"
 /// ```
+/// 
 pub const line: Document = Line(1)
 
 /// A document that is always printed as a series of consecutive newlines.
