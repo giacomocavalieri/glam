@@ -66,10 +66,9 @@ fn task_to_doc(task: Task) -> Document {
   case list.is_empty(task.subtasks) {
     True -> task_doc
     False ->
-      [doc.soft_break, tasks_to_doc(task.subtasks)]
+      [task_doc, doc.soft_break, tasks_to_doc(task.subtasks)]
       |> doc.concat
       |> doc.nest(by: 2)
-      |> doc.prepend(task_doc)
   }
 }
 
