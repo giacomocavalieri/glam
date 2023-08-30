@@ -6,7 +6,7 @@ import gleam/list
 import gleam/string
 import glam/doc.{Document}
 
-pub type JSON {
+type JSON {
   String(String)
   Number(Float)
   Bool(Bool)
@@ -59,7 +59,7 @@ fn comma() -> Document {
 /// }
 /// ```
 /// 
-pub fn json_to_doc(json: JSON) -> Document {
+fn json_to_doc(json: JSON) -> Document {
   case json {
     String(string) -> doc.from_string("\"" <> string <> "\"")
     Number(number) -> doc.from_string(float.to_string(number))
