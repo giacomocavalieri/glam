@@ -347,7 +347,7 @@ I highly recommend you try it: it's really rewarding and you'll never look at
 online JSON formatters in the same way!
 
 There's also another tutorial on
-[pretty printing error messages](https://hexdocs.pm/glam/pretty_printing_error_messages.html)
+[pretty printing lovely error messages](https://hexdocs.pm/glam/pretty_printing_lovely_error_messages.html)
 you can look at.
 It's one of the tutorials I had the most fun writing, I hope you find it
 interesting as well!
