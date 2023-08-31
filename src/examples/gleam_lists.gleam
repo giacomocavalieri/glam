@@ -13,16 +13,16 @@ import glam/doc.{Document}
 /// ## Examples
 /// 
 /// ```
-/// > let list = ["Gleam", "is", "fun!"] |> pretty_list
-/// > list |> doc.to_string(30)
-/// ["Gleam", "is", "fun!"]
+/// let list = ["Gleam", "is", "fun!"] |> pretty_list
+/// list |> doc.to_string(30)
+/// // -> ["Gleam", "is", "fun!"]
 /// 
-/// > list |> doc.to_string(6)
-/// [
-///   "Gleam",
-///   "is",
-///   "fun!",
-/// ]
+/// list |> doc.to_string(6)
+/// // -> [
+/// //   "Gleam",
+/// //   "is",
+/// //   "fun!",
+/// // ]
 /// ```
 /// 
 fn pretty_list(list: List(String)) -> Document {
