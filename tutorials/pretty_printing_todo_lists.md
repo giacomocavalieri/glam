@@ -83,7 +83,7 @@ fn tasks_to_doc(tasks: TodoList) -> Document {
 }
 ```
 
-We can turn this problem into something more approachable by tackling first the
+We can turn this problem into something more approachable by first tackling the
 pretty printing of a single task:
 
 ```gleam
@@ -104,10 +104,8 @@ fn tasks_to_doc(tasks: TodoList) -> Document {
 
 ### Pretty printing a task
 
-We just have to pretty print a task. If you have already followed along the
-introductory tutorial this shouldn't be too complicated.
-We first have to create the appropriate bullet point according to the task's
-status:
+In order to pretty print a single task, we first have to create the appropriate
+bullet point according to its status:
 
 ```gleam
 fn status_to_bullet(status: Status) -> String {
@@ -130,7 +128,13 @@ fn task_to_doc(task: Task) -> Document {
 }
 ```
 
-And we can handle the subtasks with a recursive call to `tasks_to_doc`:
+The document for the task we've just created is obtained from a single string:
+if we joined the pieces with a `doc.space`, the pretty printer could split the
+bullet point and the task description on different lines.
+What we want is to have the task always on the same line as its bullet.
+
+Now we can turn our attention to the list of subtasks; we can handle those with
+a mutually recursive call to `tasks_to_doc`:
 
 ```gleam
 fn task_to_doc(task: Task) -> Document {
@@ -146,9 +150,10 @@ fn task_to_doc(task: Task) -> Document {
 }
 ```
 
-When the task has no more subtasks we just return its line, otherwise we join it
-with a `doc.soft_break` (we covered that in the introductory tutorial) with the
-document obtained from its subtasks.
+We just have to be careful and remember to not add any space if there's actually
+no subtask to display.
+When there are subtasks, though, we join their document and the task's one with
+a `doc.soft_break`.
 
 Let's try this out and see how a TODO list is pretty printed:
 
@@ -168,13 +173,14 @@ Looks like everything ended up on a single line. What we wanted was to get a
 task per line, no matter how wide it is.
 
 The problem is that, when the pretty printer has to deal with a `doc.soft_break`
-(or any other kind of `break`), only splits it if the group it belongs to
-doesn't fit on a single line. If, like in this example, we provide the pretty
-printer enough space, it will gladly keep everything on a single line!
+(or any other kind of `break`), it only splits it if the group it belongs to
+doesn't fit on a single line.
+If, like in this example, we provide the pretty printer enough space, it will
+gladly keep everything on a single line!
 
-There is a quick and dirty solution: just trick the pretty printer and use 0 as
-the maximum width. Then, the pretty printer will always split every single
-group it runs into:
+There is a quick and dirty solution: just trick the pretty printer and use `0`
+as the maximum width.
+Then, the pretty printer will always split every single group it runs into:
 
 ```gleam
 [
@@ -191,14 +197,14 @@ group it runs into:
 While this works for such a simple example, the problem with this approach is
 that it breaks down quite easily for more complex documents: imagine you had
 only a portion of the document that you wanted to always break; by setting the
-line width to 0 you're going to always break _every single group_ making up the
-document.
+line width to `0` you're going to always break _every single group_.
 
 ## Forcing a break
 
 There's a better way to force the pretty printer to always break a given break:
-that's the function `doc.force_break`: it takes a document as input and forces
-the pretty printer to always break the `doc.break` it is made of:
+`doc.force_break`.
+This function takes a document as input and forces the pretty printer to break
+the `doc.break` it is made of:
 
 ```gleam
 let example = 
@@ -233,13 +239,14 @@ doc.to_string(example, 10_000)
 ```
 
 Simply wrapping everything in a `doc.group` _before_ calling `doc.force_break`
-renders it useless: the pretty printer will simply ignore it and treat the group
+renders it useless: the pretty printer will just ignore it and treat the group
 as it usually would.
 
 ### Fixing the TODO list pretty printer
 
-We can take advantage of break to nicely tell the pretty printer to always split
-the items on newlines. The required change is minimal:
+We can take advantage of `doc.force_break` to ask the pretty printer to split
+the items on newlines, no matter the line width.
+The required change to get a correct implementation of `tasks_to_doc` is minimal:
 
 ```gleam
 fn tasks_to_doc(tasks: TodoList) -> Document {
@@ -291,6 +298,7 @@ fn task_to_doc(task: Task) -> Document {
       [task_doc, doc.soft_break, docs_to_task(task.subtasks)]
       |> doc.concat
       |> doc.nest(by: 2)
+      // ^-- we just needed to add this single line
   }
 }
 ```
@@ -302,7 +310,7 @@ That's why this small change is enough to deal with deeply nested task lists
 and each sublist is going to be nested at the right level.
 
 If we now call `tasks_to_doc` on the TODO list I showed you at the beginning of
-the tutorial what we get is:
+the tutorial what we get is this nice-looking list:
 
 ```gleam
 tasks_to_doc(todo_list)
@@ -316,3 +324,30 @@ tasks_to_doc(todo_list)
 //     - [ ] add some tests
 // - [ ] get some sleep
 ```
+
+## Recap
+
+Our final implementation is just a bit less than 30 lines of pretty printing
+but we got quite a nice value out of it:
+
+- you learned about `doc.force_break` as a way to force the pretty printer
+  to nicely handle break that should always be split
+- hopefully you got a better understanding of how `doc.nest` can help you
+  nest arbitrarily deep data structures
+
+If you want to take a look at the full implementation code, you can find it
+[here](https://github.com/giacomocavalieri/glam/blob/main/src/examples/todo_lists.gleam).
+
+## What to do next?
+
+If you want to test your skills on a real-world example, you can have a look at
+the
+[JSON pretty printing tutorial](https://hexdocs.pm/glam/pretty_printing_JSON.html),
+I highly recommend you try it: it's really rewarding and you'll never look at
+online JSON formatters in the same way!
+
+There's also another tutorial on
+[pretty printing error messages](https://hexdocs.pm/glam/pretty_printing_error_messages.html)
+you can look at.
+It's one of the tutorials I had the most fun writing, I hope you find it
+interesting as well!
