@@ -22,7 +22,7 @@ I suggest you work through the tutorials in this order:
   this tutorial walks through the implementation of a JSON pretty printer. It
   won't introduce any new concepts, but it can be a nice exercise to hone your
   pretty printing skills
-- [Pretty printing lovely error messages]():
+- [Pretty printing lovely error messages](https://hexdocs.pm/glam/pretty_printing_lovely_error_messages.html):
   this tutorial will walk you through the implementation of a pretty printer for
   the error messages of a made-up programming language. You'll learn about
   another function that was omitted in the introductory tutorial that can help
