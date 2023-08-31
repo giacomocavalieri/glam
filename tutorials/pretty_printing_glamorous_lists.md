@@ -30,7 +30,7 @@ example:
 ]
 ```
 
-Now that we have a clear picture of what a pretty-printed list should look
+Now that we have a clear picture of what a pretty printed list should look
 like we can dive deep into the wonders of pretty printing!
 
 ## Setup

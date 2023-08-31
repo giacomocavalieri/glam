@@ -1,9 +1,9 @@
 # Pretty printing TODO lists
 
 This tutorial assumes that you already have some familiarity with
-pretty-printing in Glam and with its API.
+pretty printing in Glam and with its API.
 
-If you feel like you need to brush up on your pretty-printing skills, you can
+If you feel like you need to brush up on your pretty printing skills, you can
 first go through the
 [introductory tutorial](https://hexdocs.pm/glam/01_gleam_lists.html) and come
 back to this one.

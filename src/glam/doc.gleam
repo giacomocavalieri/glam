@@ -2,7 +2,7 @@ import gleam/list
 import gleam/string
 import gleam/string_builder.{StringBuilder}
 
-/// A document that can be pretty-printed with `to_string`.
+/// A document that can be pretty printed with `to_string`.
 /// 
 pub opaque type Document {
   Line(size: Int)
