@@ -18,4 +18,5 @@ pages = [
   { title = "", path = "pretty_printing_glamorous_lists.html", source = "./tutorials/pretty_printing_glamorous_lists.md" },
   { title = "", path = "pretty_printing_todo_lists.html", source = "./tutorials/pretty_printing_todo_lists.md" },
   { title = "", path = "pretty_printing_JSON.html", source = "./tutorials/pretty_printing_JSON.md" },
+  { title = "", path = "pretty_printing_lovely_error_messages.html", source = "./tutorials/pretty_printing_lovely_error_messages.md" },
 ]
