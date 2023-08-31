@@ -29,34 +29,56 @@ fn comma() -> Document {
 /// - null is printed as "null"
 /// - arrays are split on newlines only if they cannot fit on one
 /// - the same applies to objects
+/// - if an array/object field has to be split, its open parenthesis 
+///   should still be kept on the same line as the field name
 /// 
 /// ## Examples
 /// 
 /// ```
-/// > let array = Array([Null, Bool(True), Bool(False)]) |> json_to_doc
-/// > array |> doc.to_string(40)
-/// [null, true, false]
+/// let array = Array([Null, Bool(True), Bool(False)]) |> json_to_doc
+/// array |> doc.to_string(40)
+/// // -> [null, true, false]
 /// 
-/// > array |> doc.to_string(10)
-/// [
-///   null,
-///   true,
-///   false
-/// ]
+/// array |> doc.to_string(10)
+/// // -> [
+/// //   null,
+/// //   true,
+/// //   false
+/// // ]
 /// ``` 
 /// 
 /// ```
-/// > let object =
-/// >   Object([#("name", String("Giacomo")), #("loves_gleam", Bool(True))])
-/// >   |> json_to_doc
-/// > object |> doc.to_string(80)
-/// { name: "Giacomo", loves_gleam: True } 
+/// let object =
+///   Object([#("name", String("Giacomo")), #("loves_gleam", Bool(True))])
+///   |> json_to_doc
+/// object |> doc.to_string(80)
+/// // -> { name: "Giacomo", loves_gleam: True } 
 /// 
-/// > object |> doc.to_string(10)
-/// {
-///   name: "Giacomo",
-///   loves_gleam: True
-/// }
+/// object |> doc.to_string(10)
+/// // -> {
+/// //   name: "Giacomo",
+/// //   loves_gleam: True
+/// // }
+/// ```
+///
+/// ```
+/// let object =
+///   Object([
+///     #("name", String("Giacomo")),
+///     #("likes", Array([String("Gleam"), String("FP")]))
+///   ])
+///   |> json_to_doc
+/// object |> doc.to_string(80)
+/// // -> { name: "Giacomo", loves_gleam: True } 
+/// 
+/// object |> doc.to_string(10)
+/// // -> {
+/// //   name: "Giacomo",
+/// //   likes: [
+/// //     "Gleam",
+/// //     "FP"
+/// //   ]
+/// // }
 /// ```
 /// 
 fn json_to_doc(json: JSON) -> Document {
