@@ -2,6 +2,13 @@
 
 Here you can find some examples of pretty printing with the Glam library.
 
+Each example has a `main` function so you can run it from the project directory
+and see its output with:
+
+```shell
+gleam run -m <name_of_the_example>
+```
+
 Most likely, all files here are also explained in depth in the
 [step-by-step tutorials](https://hexdocs.pm/glam/learning_materials.html)
 I wrote for the library.
