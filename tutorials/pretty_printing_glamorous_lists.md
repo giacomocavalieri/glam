@@ -635,17 +635,10 @@ We've also used some utility methods like:
 - `doc.prepend` to prepend a document to an existing one
 - `doc.append` to append a document to an existing one
 
-If you want more examples you can have a look at the
-[`examples`](https://github.com/giacomocavalieri/glam/tree/main/src/examples)
-folder in the Glam repo.
+## What to do next?
 
----
-
-Thanks for following along! If you spot any spelling mistakes, wrong code
-snippets or some parts that are not clear, please let me know!
-
-Your feedback really means a lot to me so don't be scared to reach out!
-My Twitter handle is [@giacomo_cava](https://twitter.com/giacomo_cava) and I
-usually hang around in the [Gleam Discord server](https://discord.gg/Fm8Pwmy),
-so you can ping me there, I'm `jak11` (also the Gleam Discord is full of
-amazing people so give it a try anyway ✨)
+If you still feel hungry for pretty printing content, I've got you covered:
+have a look at Glam's
+[learning materials page](https://hexdocs.pm/glam/learning_materials.html).
+There you'll find more step-by-step tutorials that will guide you through the
+implementation of cool pretty printers.
