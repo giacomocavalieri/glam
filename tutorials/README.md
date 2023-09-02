@@ -1,5 +1,22 @@
 # Learning materials
 
+Pretty printing with a package like Glam can be quite confusing at first: it may
+take some time to get used to the API, and when writing your first pretty
+printers it may be difficult to get the desired look.
+
+Don't be scared, that's normal! The topic is quite challenging, but that's
+nothing that some practice cannot fix. There are plenty of learning materials to
+get you started, and all the tutorials will walk you through many examples.
+
+If you still find the package has some rough edges that could be improved, if
+you feel like you're still not getting how something works, if you're having any
+kind of problem with Glam, or even if you just feel like having a chat... please
+_do reach out_! I'd love to help and your feedback is always appreciated.
+You can find me on [Twitter](https://twitter.com/giacomo_cava), hanging around
+the [Gleam Discord server](https://discord.gg/Fm8Pwmy), and I always check the
+issues and discussions in the
+[Glam repo](https://github.com/giacomocavalieri/glam).
+
 ## Step-by-step tutorials
 
 The best way to get started is by reading the Glam tutorials that will guide you
