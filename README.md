@@ -35,7 +35,7 @@ limits and indentation.
 
 ## Getting started
 
-If you want to get started with glam, a great starting point is the
+If you want to get started with Glam, a great starting point is the
 [introductory tutorial](https://hexdocs.pm/glam/01_gleam_lists.html) which will
 guide you step by step in writing a pretty printer for lists.
 
