@@ -1,4 +1,4 @@
-![Glam](https://github.com/giacomocavalieri/glam/blob/flex_break/resources/glam_banner.png?raw=true)
+![Glam](https://github.com/giacomocavalieri/glam/blob/main/resources/glam_banner.png?raw=true)
 
 [![Package Version](https://img.shields.io/hexpm/v/glam?color=92DCE5)](https://hex.pm/packages/glam)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3?color=FCC0D2)](https://hexdocs.pm/glam/)
