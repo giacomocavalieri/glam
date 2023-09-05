@@ -7,12 +7,13 @@ import gleam/string_builder.{StringBuilder}
 pub opaque type Document {
   Line(size: Int)
   Concat(docs: List(Document))
-  Text(text: String)
+  Text(text: String, length: Int)
   Nest(doc: Document, indentation: Int)
   ForceBreak(doc: Document)
   Break(unbroken: String, broken: String)
   FlexBreak(unbroken: String, broken: String)
   Group(doc: Document)
+  Fits(doc: Document)
 }
 
 /// Joins a document into the end of another.
@@ -234,7 +235,7 @@ pub fn force_break(doc: Document) -> Document {
 /// ```
 /// 
 pub fn from_string(string: String) -> Document {
-  Text(string)
+  Text(string, string.length(string))
 }
 
 /// Allows the pretty printer to break the `break` documents inside the given
@@ -281,6 +282,11 @@ pub fn from_string(string: String) -> Document {
 /// 
 pub fn group(doc: Document) -> Document {
   Group(doc)
+}
+
+/// TODO:
+pub fn ignore_next_break(doc: Document) -> Document {
+  Fits(doc)
 }
 
 /// Joins a list of documents inserting the given separator between
@@ -460,22 +466,31 @@ pub fn to_string(doc: Document, width: Int) -> String {
 /// of a `String`.
 /// 
 pub fn to_string_builder(doc: Document, width: Int) -> StringBuilder {
-  do_format(string_builder.new(), width, 0, [#(0, Unbroken, doc)])
+  do_format(string_builder.new(), width, 0, [#(0, FlatMode, doc)])
 }
 
+/// Represents the mode with which the document is rendered.
+/// 
 type Mode {
-  Broken
-  ForceBroken
-  Unbroken
+  /// The document is printed as flat, each break may or may not fit.
+  /// 
+  FlatMode
+
+  /// The document is printed as broken, each break is split, so it always fits.
+  /// 
+  BreakMode
+
+  IgnoreNextBreakMode
 }
 
 fn fits(
   docs: List(#(Int, Mode, Document)),
-  max_width: Int,
-  current_width: Int,
+  limit: Int,
+  width: Int,
+  break: Bool,
 ) -> Bool {
   case docs {
-    _ if current_width > max_width -> False
+    _ if width > limit && break -> False
 
     [] -> True
 
@@ -483,28 +498,37 @@ fn fits(
       case doc {
         Line(..) -> True
 
-        ForceBreak(..) -> False
+        ForceBreak(doc) ->
+          case mode {
+            BreakMode | FlatMode -> False
+            IgnoreNextBreakMode ->
+              fits([#(indent, mode, doc), ..rest], limit, width, break)
+          }
 
-        Text(text) -> fits(rest, max_width, current_width + string.length(text))
+        Fits(doc) ->
+          [#(indent, IgnoreNextBreakMode, doc), ..rest]
+          |> fits(limit, width, break)
+
+        Text(length: length, ..) -> fits(rest, limit, width + length, break)
 
         Nest(doc, i) ->
           [#(indent + i, mode, doc), ..rest]
-          |> fits(max_width, current_width)
+          |> fits(limit, width, break)
 
         Break(unbroken: unbroken, ..) | FlexBreak(unbroken: unbroken, ..) ->
           case mode {
-            Broken | ForceBroken -> True
-            Unbroken ->
-              fits(rest, max_width, current_width + string.length(unbroken))
+            BreakMode | IgnoreNextBreakMode -> True
+            FlatMode -> fits(rest, limit, width + string.length(unbroken), True)
           }
 
         Group(doc) ->
-          fits([#(indent, mode, doc), ..rest], max_width, current_width)
+          [#(indent, FlatMode, doc), ..rest]
+          |> fits(limit, width, break)
 
         Concat(docs) ->
           list.map(docs, fn(doc) { #(indent, mode, doc) })
           |> list.append(rest)
-          |> fits(max_width, current_width)
+          |> fits(limit, width, break)
       }
   }
 }
@@ -515,8 +539,8 @@ fn indentation(size: Int) -> String {
 
 fn do_format(
   acc: StringBuilder,
-  max_width: Int,
-  current_width: Int,
+  limit: Int,
+  width: Int,
   docs: List(#(Int, Mode, Document)),
 ) -> StringBuilder {
   case docs {
@@ -527,63 +551,60 @@ fn do_format(
         Line(size) ->
           string_builder.append(acc, string.repeat("\n", size))
           |> string_builder.append(indentation(indent))
-          |> do_format(max_width, indent, rest)
+          |> do_format(limit, indent, rest)
 
         // Flex breaks ignore the current mode and are always reevaluated
         FlexBreak(unbroken: unbroken, broken: broken) -> {
-          let new_unbroken_width = current_width + string.length(unbroken)
-          case fits(rest, max_width, new_unbroken_width) {
+          let width = width + string.length(unbroken)
+          case mode == FlatMode || fits(rest, limit, width, True) {
             True ->
               string_builder.append(acc, unbroken)
-              |> do_format(max_width, new_unbroken_width, rest)
+              |> do_format(limit, width, rest)
 
             False ->
               string_builder.append(acc, broken)
               |> string_builder.append("\n")
               |> string_builder.append(indentation(indent))
-              |> do_format(max_width, indent, rest)
+              |> do_format(limit, indent, rest)
           }
         }
 
         Break(unbroken: unbroken, broken: broken) ->
           case mode {
-            Unbroken -> {
-              let new_width = current_width + string.length(unbroken)
+            FlatMode | IgnoreNextBreakMode ->
               string_builder.append(acc, unbroken)
-              |> do_format(max_width, new_width, rest)
-            }
+              |> do_format(limit, width + string.length(unbroken), rest)
 
-            Broken | ForceBroken ->
+            BreakMode ->
               string_builder.append(acc, broken)
               |> string_builder.append("\n")
               |> string_builder.append(indentation(indent))
-              |> do_format(max_width, indent, rest)
+              |> do_format(limit, indent, rest)
           }
 
-        ForceBreak(doc) ->
-          [#(indent, ForceBroken, doc), ..rest]
-          |> do_format(acc, max_width, current_width, _)
+        ForceBreak(doc) | Fits(doc) ->
+          do_format(acc, limit, width, [#(indent, mode, doc), ..rest])
 
         Concat(docs) ->
           list.map(docs, fn(doc) { #(indent, mode, doc) })
           |> list.append(rest)
-          |> do_format(acc, max_width, current_width, _)
+          |> do_format(acc, limit, width, _)
 
         Group(doc) ->
-          case fits([#(indent, Unbroken, doc)], max_width, current_width) {
-            True -> #(indent, Unbroken, doc)
-            False -> #(indent, Broken, doc)
+          case fits([#(indent, FlatMode, doc)], limit, width, False) {
+            True -> #(indent, FlatMode, doc)
+            False -> #(indent, BreakMode, doc)
           }
           |> list.prepend(to: rest)
-          |> do_format(acc, max_width, current_width, _)
+          |> do_format(acc, limit, width, _)
 
         Nest(doc, i) ->
           [#(indent + i, mode, doc), ..rest]
-          |> do_format(acc, max_width, current_width, _)
+          |> do_format(acc, limit, width, _)
 
-        Text(text) ->
+        Text(text: text, length: length) ->
           string_builder.append(acc, text)
-          |> do_format(max_width, current_width + string.length(text), rest)
+          |> do_format(limit, width + length, rest)
       }
   }
 }

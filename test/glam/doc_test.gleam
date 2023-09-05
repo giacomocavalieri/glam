@@ -190,3 +190,14 @@ pub fn flex_break_with_group_and_nesting_test() {
   doc.to_string(list, 1)
   |> should.equal("[\n  1,\n  2,\n  3,\n  4,\n  5,\n]")
 }
+
+pub fn ignore_next_break_test() {
+  ["Gleam", "is", "fun!"]
+  |> list.map(doc.from_string)
+  |> doc.join(with: doc.space)
+  |> doc.force_break
+  |> doc.ignore_next_break
+  |> doc.group
+  |> doc.to_string(100)
+  |> should.equal("Gleam is fun!")
+}
