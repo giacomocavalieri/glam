@@ -59,7 +59,7 @@ pub fn append_docs(first: Document, docs: List(Document)) -> Document {
 /// could not be rendered on a single line.
 /// 
 /// If the pretty printer decides to add a newline after `break` it will be
-/// rendered as its first argument, otherwise as its first argument.
+/// rendered as its second argument, otherwise as its first argument.
 /// 
 /// ## Examples
 /// 
