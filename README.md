@@ -36,11 +36,12 @@ limits and indentation.
 ## Getting started
 
 If you want to get started with Glam, a great starting point is the
-[introductory tutorial](https://hexdocs.pm/glam/01_gleam_lists.html) which will
-guide you step by step in writing a pretty printer for lists.
+[learning materials page](https://hexdocs.pm/glam/learning_materials.html)!
+There you'll find a lot of step-by-step tutorials that will guide you through
+some awesome pretty printers and get you up and running with Glam.
 
-By the end of the tutorial you'll know most of the package's API and you'll have
-implemented a function that can nicely display lists like this:
+By the end of the tutorials you'll know most of the package's API and you'll
+have implemented pretty printers for lists, JSON and error messages:
 
 ```gleam
 pretty_list(["Gleam", "is", "fun!"])

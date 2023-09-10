@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.1.1 - 2023-09-10
+
+- Fix a broken link in the documentation's homepage
+
 ## v1.1.0 - 2023-09-10
 
 - The `doc` module gains the `flex_break` function
