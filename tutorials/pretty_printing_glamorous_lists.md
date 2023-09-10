@@ -185,9 +185,9 @@ to a pretty printed list.
 To understand the problem here we need to get into a bit more detail on how the
 pretty printing of documents works:
 
-- when the pretty printer has to display a `doc.from_string` it simply outputs
+- When the pretty printer has to display a `doc.from_string` it simply outputs
   the string passed to it as an argument leaving it unchanged
-- when the pretty printer has to display a list of documents joined with
+- When the pretty printer has to display a list of documents joined with
   `doc.concat`, it formats each document one and joins them together without
   adding any whitespace or trying to split them to fit on a line
 
@@ -209,11 +209,11 @@ allowed to break a document if it does not fit on a single line.
 
 This is the job for `doc.group` and `doc.space`:
 
-- when the pretty printer runs into a `doc.group` it first tries to render the
+- When the pretty printer runs into a `doc.group` it first tries to render the
   document on a single line, just like `doc.concat`. The catch is that if the
   document would not fit on a single line, the pretty printer will break all the
   spaces inside it
-- a `doc.space` is a special kind of document that gets normally rendered as a
+- A `doc.space` is a special kind of document that gets normally rendered as a
   single whitespace: `" "`. However, the pretty printer can turn these spaces
   into newlines in order to split a `doc.group` that would not fit on a single
   line
@@ -544,8 +544,8 @@ its breaks are displayed as `"↩"`; if it is not broken they are displayed as
 > `doc.space` can actually be defined in terms of `doc.break` (and that's how
 > it is defined in Glam!) as `doc.break(" ", "")`:
 >
-> - if the group is not broken we render a single whitespace
-> - if the group gets broken we do not render anything and let the pretty
+> - If the group is not broken we render a single whitespace
+> - If the group gets broken we do not render anything and let the pretty
 >   printer do its magic and add a newline after each space
 
 ### Back to lists one last time
