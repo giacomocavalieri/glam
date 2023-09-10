@@ -11,7 +11,8 @@ get you started, and all the tutorials will walk you through many examples.
 If you still find the package has some rough edges that could be improved, if
 you feel like you're still not getting how something works, if you're having any
 kind of problem with Glam, or even if you just feel like having a chat... please
-_do reach out_! I'd love to help and your feedback is always appreciated.
+_do reach out_! I'd love to help and your feedback is always appreciated 💜
+
 You can find me on [Twitter](https://twitter.com/giacomo_cava), hanging around
 the [Gleam Discord server](https://discord.gg/Fm8Pwmy), and I always check the
 issues and discussions in the

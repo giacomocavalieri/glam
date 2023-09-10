@@ -47,7 +47,7 @@ gleam add glam          # add the `glam` package to the project's dependencies
 
 > If you know nothing about Gleam and somehow ended up here, I can recommend you
 > to first check out the
-> [Gleam's Exercism track]((https://exercism.org/tracks/gleam/concepts)).
+> [Gleam's Exercism track](https://exercism.org/tracks/gleam/concepts).
 > It's a great resource to get started!
 
 First things first, you can import the Glam package in your project's

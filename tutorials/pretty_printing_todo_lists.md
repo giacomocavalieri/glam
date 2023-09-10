@@ -5,8 +5,8 @@ pretty printing in Glam and with its API.
 
 If you feel like you need to brush up on your pretty printing skills, you can
 first go through the
-[introductory tutorial](https://hexdocs.pm/glam/01_gleam_lists.html) and come
-back to this one.
+[introductory tutorial](https://hexdocs.pm/glam/pretty_printing_glamorous_lists.html)
+and come back to this one.
 
 ## Goals
 
