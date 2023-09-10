@@ -59,13 +59,14 @@ fn errors_to_doc(source_code: String, errors: List(Error)) -> Document {
 }
 
 fn error_to_doc(source_code: String, error: Error) -> Document {
-  let prefix_size = string.length(line_prefix(error.span.line))
+  let underline_size = error.span.column_end - error.span.column_start + 1
+  let #(line_doc, prefix_size) = line_doc(source_code, error.span.line)
 
   [
     header_doc(error.code, error.name),
     doc.line,
-    line_doc(source_code, error.span.line),
-    [doc.line, message_doc(error.message, error.span)]
+    line_doc,
+    [doc.line, message_doc(error.message, underline_size)]
     |> doc.concat
     |> doc.nest(by: error.span.column_start + prefix_size),
   ]
@@ -78,20 +79,21 @@ fn header_doc(code: String, name: String) -> Document {
   |> doc.from_string
 }
 
-fn line_doc(source_code: String, line_number: Int) -> Document {
+fn line_doc(source_code: String, line_number: Int) -> #(Document, Int) {
   let source_code_lines = string.split(source_code, on: "\n")
   let assert Ok(line) = list.at(source_code_lines, line_number)
-  doc.from_string(line_prefix(line_number) <> line)
+  let prefix = line_prefix(line_number)
+  let prefix_size = string.length(prefix)
+  #(doc.from_string(prefix <> line), prefix_size)
 }
 
 fn line_prefix(line_number: Int) -> String {
   int.to_string(line_number + 1) <> " | "
 }
 
-fn message_doc(message: String, span: Span) -> Document {
-  let span_length = span.column_end - span.column_start + 1
+fn message_doc(message: String, length: Int) -> Document {
   [
-    underlined_pointer(span_length),
+    underlined_pointer(length),
     flexible_text(message)
     |> doc.nest(by: 3),
   ]
