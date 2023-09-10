@@ -71,7 +71,7 @@ let the_sundial =
   ])
 ```
 
-I want to write a pretty printer for JSON data to display this in a nice
+I want to write a pretty printer for JSON data to display this in a nice,
 human-readable way. The desired output for this object would look like this:
 
 ```json
@@ -148,8 +148,8 @@ fn json_to_doc(json: JSON) -> Document {
 
 To turn a boolean value into a document we can define a helper function
 `bool_to_doc` (you could also transform the value directly inside the pattern
-matching branch, but I like it more to define helper functions to keep
-things tidy):
+matching branch, but I'd rather define an helper function to keep things
+tidy):
 
 ```gleam
 fn bool_to_doc(bool: Bool) -> Document {
@@ -214,7 +214,7 @@ fn array_to_doc(objects: List(JSON)) -> Document {
 > The Glam package also has a `doc.concat_join` function which is a shorthand
 > for writing `doc.join(..., with: doc.concat(...))`.
 >
-> The code I just show you can be rewritten like this:
+> The code I just showed you can be rewritten like this:
 >
 > ```gleam
 > list.map(objects, json_to_doc)
@@ -254,14 +254,14 @@ fn array_to_doc(objects: List(JSON)) -> Document {
 
 A few things to notice here:
 
-- we use `doc.prepend_docs` and `doc.append_docs` which are just shorthands for
+- We use `doc.prepend_docs` and `doc.append_docs` which are just shorthands for
   `doc.prepend(doc.concat(...))` and `doc.append(doc.concat(...))`
-- we add a breakable `doc.space` after the open bracket and before the closing
+- We add a breakable `doc.space` after the open bracket and before the closing
   one. When the pretty printer outputs the array on a single line there will
   be a space to separate the item from the brackets; however, if the array does
   not fit on a single line, that space will be broken making sure that open and
   closed brackets will be kept on a separate line
-- we wrap everything in a `doc.group`: this tells the pretty printer that it is
+- We wrap everything in a `doc.group`: this tells the pretty printer that it is
   allowed to break the spaces inside it if it doesn't fit on a single line
 
 Last, we can add indentation for when the array gets broken on multiple lines:
@@ -350,10 +350,10 @@ code snippet above.
 Now that we can turn a single field/value pair into a document we can get back
 to the problem of turning an entire object into a document:
 
-- transform every field/value pair into a document
-- join those together with a comma and a breakable space
-- enclose everything in open and closed curly brackets
-- nest the object fields
+- Transform every field/value pair into a document
+- Join those together with a comma and a breakable space
+- Enclose everything in open and closed curly brackets
+- Nest the object fields
 
 ```gleam
 fn object_to_doc(fields: List(#(String, JSON))) -> Document {

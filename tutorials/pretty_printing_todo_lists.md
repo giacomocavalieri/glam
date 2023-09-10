@@ -330,9 +330,9 @@ tasks_to_doc(todo_list)
 Our final implementation is just a bit less than 30 lines of pretty printing
 but we got quite a nice value out of it:
 
-- you learned about `doc.force_break` as a way to force the pretty printer
+- You learned about `doc.force_break` as a way to force the pretty printer
   to nicely handle break that should always be split
-- hopefully you got a better understanding of how `doc.nest` can help you
+- Hopefully you got a better understanding of how `doc.nest` can help you
   nest arbitrarily deep data structures
 
 If you want to take a look at the full implementation code, you can find it
