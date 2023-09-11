@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Improve performance of text formatting with long `doc.from_string`
+
 ## v1.1.1 - 2023-09-10
 
 - Fix a broken link in the documentation's homepage

@@ -7,7 +7,7 @@ import gleam/string_builder.{StringBuilder}
 pub opaque type Document {
   Line(size: Int)
   Concat(docs: List(Document))
-  Text(text: String)
+  Text(text: String, length: Int)
   Nest(doc: Document, indentation: Int)
   ForceBreak(doc: Document)
   Break(unbroken: String, broken: String)
@@ -234,7 +234,7 @@ pub fn force_break(doc: Document) -> Document {
 /// ```
 /// 
 pub fn from_string(string: String) -> Document {
-  Text(string)
+  Text(string, string.length(string))
 }
 
 /// Allows the pretty printer to break the `break` documents inside the given
@@ -485,7 +485,8 @@ fn fits(
 
         ForceBreak(..) -> False
 
-        Text(text) -> fits(rest, max_width, current_width + string.length(text))
+        Text(text: _text, length: length) ->
+          fits(rest, max_width, current_width + length)
 
         Nest(doc, i) ->
           [#(indent + i, mode, doc), ..rest]
@@ -581,9 +582,9 @@ fn do_format(
           [#(indent + i, mode, doc), ..rest]
           |> do_format(acc, max_width, current_width, _)
 
-        Text(text) ->
+        Text(text: text, length: length) ->
           string_builder.append(acc, text)
-          |> do_format(max_width, current_width + string.length(text), rest)
+          |> do_format(max_width, current_width + length, rest)
       }
   }
 }
