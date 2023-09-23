@@ -350,6 +350,29 @@ pub fn nest(doc: Document, by indentation: Int) -> Document {
   Nest(doc, indentation)
 }
 
+/// Joins together a list of documents and increases their nesting level.
+/// 
+/// This is a shorthand for `nest(concat(docs), by: indentation)`.
+/// 
+/// ## Examples
+/// 
+/// ```gleam
+/// [from_string("one"), space, from_string("two")]
+/// |> nest_docs(by: 2)
+/// |> append(space)
+/// |> append(from_string("three"))
+/// |> group
+/// |> to_string(5)
+/// // ->
+/// // one
+/// //   two
+/// // three
+/// ```
+/// 
+pub fn nest_docs(docs: List(Document), by indentation: Int) -> Document {
+  Nest(concat(docs), indentation)
+}
+
 /// Prefixes a document to another one.
 /// 
 /// ## Examples

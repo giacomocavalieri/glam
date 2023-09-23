@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- The `doc` module gains the `nest_docs` function
 - Improve performance of text formatting with long `doc.from_string`
 
 ## v1.1.1 - 2023-09-10

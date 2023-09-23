@@ -129,6 +129,16 @@ pub fn nest_test() {
   |> should.equal("list:\n one\n  two\n   three")
 }
 
+pub fn nest_docs_test() {
+  [doc.from_string("one"), doc.space, doc.from_string("two")]
+  |> doc.nest_docs(by: 2)
+  |> doc.append(doc.space)
+  |> doc.append(doc.from_string("three"))
+  |> doc.group
+  |> doc.to_string(5)
+  |> should.equal("one\n  two\nthree")
+}
+
 pub fn prepend_test() {
   doc.from_string("printed!")
   |> doc.prepend(doc.from_string("pretty "))
