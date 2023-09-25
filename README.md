@@ -3,7 +3,7 @@
 [![Package Version](https://img.shields.io/hexpm/v/glam?color=92DCE5)](https://hex.pm/packages/glam)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3?color=FCC0D2)](https://hexdocs.pm/glam/)
 
-A package to help you easily pretty print structured data ✨
+✨ A package to help you easily pretty print structured data
 
 > ⚙️ This package works with both the Erlang and Javascript target
 
