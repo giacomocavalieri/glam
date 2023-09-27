@@ -7,7 +7,7 @@ repository = { type = "github", user = "giacomocavalieri", repo = "glam" }
 internal_modules = ["examples", "examples/*"]
 
 [dependencies]
-gleam_stdlib = "~> 0.30"
+gleam_stdlib = "~> 0.31"
 
 [dev-dependencies]
 gleeunit = "~> 0.10"

@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Bumped `stdlib` dependency from `0.30` to `0.31`
+
 ## v1.2.0 - 2023-09-23
 
 - The `doc` module gains the `nest_docs` function
