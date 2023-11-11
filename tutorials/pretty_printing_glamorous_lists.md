@@ -54,7 +54,7 @@ First things first, you can import the Glam package in your project's
 modules like this:
 
 ```gleam
-import glam/doc.{Document}
+import glam/doc.{type Document}
 ```
 
 ## Basic building blocks

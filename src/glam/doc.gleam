@@ -1,6 +1,6 @@
 import gleam/list
 import gleam/string
-import gleam/string_builder.{StringBuilder}
+import gleam/string_builder.{type StringBuilder}
 
 /// A document that can be pretty printed with `to_string`.
 /// 

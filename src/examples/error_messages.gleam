@@ -2,7 +2,7 @@ import gleam/int
 import gleam/io
 import gleam/list
 import gleam/string
-import glam/doc.{Document}
+import glam/doc.{type Document}
 
 type Span {
   Span(line: Int, column_start: Int, column_end: Int)

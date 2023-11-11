@@ -2,7 +2,7 @@ import gleam/int
 import gleam/io
 import gleam/list
 import gleam/string
-import glam/doc.{Document}
+import glam/doc.{type Document}
 
 /// Pretty prints a list of strings:
 /// - each string is surrounded by quotes
