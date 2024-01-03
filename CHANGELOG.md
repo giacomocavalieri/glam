@@ -1,9 +1,10 @@
 # Changelog
 
-## Unreleased
+## v1.3.0 - 2023-01-03
 
-- Update to Gleam `v0.32`
-- Bump `stdlib` dependency from `0.30` to `0.31`
+- Update to Gleam `v0.33`
+- Bump `stdlib` dependency from `0.30` to `0.33`
+- Bump `gleeunit` dependency from `0.10` to `1.0`
 
 ## v1.2.0 - 2023-09-23
 
