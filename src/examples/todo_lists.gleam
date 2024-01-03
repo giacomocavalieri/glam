@@ -82,22 +82,14 @@ fn status_to_bullet(status: Status) -> String {
 
 pub fn main() {
   let todo_list = [
-    Task(
-      InProgress,
-      "publish Glam v1.1.0",
-      [
-        Task(InProgress, "write a tutorial on todo lists", []),
-        Task(
-          InProgress,
-          "add `doc.flex_break`",
-          [
-            Task(Done, "add the appropriate type variant", []),
-            Task(Done, "implement the missing cases", []),
-            Task(Todo, "add some tests", []),
-          ],
-        ),
-      ],
-    ),
+    Task(InProgress, "publish Glam v1.1.0", [
+      Task(InProgress, "write a tutorial on todo lists", []),
+      Task(InProgress, "add `doc.flex_break`", [
+        Task(Done, "add the appropriate type variant", []),
+        Task(Done, "implement the missing cases", []),
+        Task(Todo, "add some tests", []),
+      ]),
+    ]),
     Task(Todo, "get some sleep", []),
   ]
 
