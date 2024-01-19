@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Remove the `doc.to_string_builder` method.
+
 ## v1.3.0 - 2023-01-03
 
 - Update to Gleam `v0.33`
