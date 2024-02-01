@@ -6,7 +6,7 @@ import gleam/list
 import gleam/string
 import glam/doc.{type Document}
 
-type JSON {
+pub type JSON {
   String(String)
   Number(Float)
   Bool(Bool)
@@ -29,31 +29,31 @@ fn comma() -> Document {
 /// - null is printed as "null"
 /// - arrays are split on newlines only if they cannot fit on one
 /// - the same applies to objects
-/// - if an array/object field has to be split, its open parenthesis 
+/// - if an array/object field has to be split, its open parenthesis
 ///   should still be kept on the same line as the field name
-/// 
+///
 /// ## Examples
-/// 
+///
 /// ```
 /// let array = Array([Null, Bool(True), Bool(False)]) |> json_to_doc
 /// array |> doc.to_string(40)
 /// // -> [null, true, false]
-/// 
+///
 /// array |> doc.to_string(10)
 /// // -> [
 /// //   null,
 /// //   true,
 /// //   false
 /// // ]
-/// ``` 
-/// 
+/// ```
+///
 /// ```
 /// let object =
 ///   Object([#("name", String("Giacomo")), #("loves_gleam", Bool(True))])
 ///   |> json_to_doc
 /// object |> doc.to_string(80)
-/// // -> { name: "Giacomo", loves_gleam: True } 
-/// 
+/// // -> { name: "Giacomo", loves_gleam: True }
+///
 /// object |> doc.to_string(10)
 /// // -> {
 /// //   name: "Giacomo",
@@ -69,8 +69,8 @@ fn comma() -> Document {
 ///   ])
 ///   |> json_to_doc
 /// object |> doc.to_string(80)
-/// // -> { name: "Giacomo", loves_gleam: True } 
-/// 
+/// // -> { name: "Giacomo", loves_gleam: True }
+///
 /// object |> doc.to_string(10)
 /// // -> {
 /// //   name: "Giacomo",
@@ -80,8 +80,8 @@ fn comma() -> Document {
 /// //   ]
 /// // }
 /// ```
-/// 
-fn json_to_doc(json: JSON) -> Document {
+///
+pub fn json_to_doc(json: JSON) -> Document {
   case json {
     String(string) -> doc.from_string("\"" <> string <> "\"")
     Number(number) -> doc.from_string(float.to_string(number))
@@ -126,36 +126,37 @@ fn field_to_doc(field: #(String, JSON)) -> Document {
   |> doc.concat
 }
 
-pub fn main() {
-  let the_sundial =
-    Object([
-      #("title", String("The sundial")),
-      #("author", String("Shirley Jackson")),
-      #("publication_year", Number(1958.0)),
-      #("read", Bool(True)),
-      #(
-        "characters",
-        Array([
-          String("Mrs. Halloran"),
-          String("Essex"),
-          String("Captain Scarabombardon"),
-        ]),
-      ),
-      #("average_rating", Number(5.0)),
-      #(
-        "ratings",
-        Array([
-          Object([#("from", String("Ben")), #("value", Number(5.0))]),
-          Object([#("from", String("Giacomo")), #("value", Number(5.0))]),
-        ]),
-      ),
-    ])
+pub fn example_json() -> JSON {
+  Object([
+    #("title", String("The sundial")),
+    #("author", String("Shirley Jackson")),
+    #("publication_year", Number(1958.0)),
+    #("read", Bool(True)),
+    #(
+      "characters",
+      Array([
+        String("Mrs. Halloran"),
+        String("Essex"),
+        String("Captain Scarabombardon"),
+      ]),
+    ),
+    #("average_rating", Number(5.0)),
+    #(
+      "ratings",
+      Array([
+        Object([#("from", String("Ben")), #("value", Number(5.0))]),
+        Object([#("from", String("Giacomo")), #("value", Number(5.0))]),
+      ]),
+    ),
+  ])
+}
 
+pub fn main() {
   use max_width <- list.each([30, 50, 80])
   io.println("Max width: " <> int.to_string(max_width))
   io.println(string.repeat("-", max_width))
 
-  json_to_doc(the_sundial)
+  json_to_doc(example_json())
   |> doc.to_string(max_width)
   |> io.println
   io.println("")

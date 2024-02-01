@@ -2,14 +2,14 @@ import gleam/io
 import gleam/list
 import glam/doc.{type Document}
 
-type TodoList =
+pub type TodoList =
   List(Task)
 
-type Task {
+pub type Task {
   Task(status: Status, description: String, subtasks: TodoList)
 }
 
-type Status {
+pub type Status {
   Todo
   Done
   InProgress
@@ -20,9 +20,9 @@ type Status {
 /// - each list of subtasks is indented by 2 spaces more than its father
 /// - each task should _always_ be on its own line, no matter how wide the
 ///   maximum line width
-/// 
+///
 /// ## Examples
-/// 
+///
 /// ```gleam
 /// [
 ///   Task(Todo, "foo", []),
@@ -36,12 +36,12 @@ type Status {
 /// // - […] bar
 /// // - [X] baz
 /// ```
-/// 
+///
 /// ```gleam
 /// [
 ///   Task(InProgress, "foo", [
 ///     Task(Done, "bar", [
-///       Task(Todo, "baz", []) 
+///       Task(Todo, "baz", [])
 ///     ])
 ///   ]),
 /// ]
@@ -52,8 +52,8 @@ type Status {
 /// //   - [X] bar
 /// //     - [ ] baz
 /// ```
-/// 
-fn tasks_to_doc(tasks: TodoList) -> Document {
+///
+pub fn tasks_to_doc(tasks: TodoList) -> Document {
   list.map(tasks, task_to_doc)
   |> doc.join(with: doc.soft_break)
   |> doc.force_break
@@ -80,8 +80,8 @@ fn status_to_bullet(status: Status) -> String {
   }
 }
 
-pub fn main() {
-  let todo_list = [
+pub fn example_todo_list() -> TodoList {
+  [
     Task(InProgress, "publish Glam v1.1.0", [
       Task(InProgress, "write a tutorial on todo lists", []),
       Task(InProgress, "add `doc.flex_break`", [
@@ -92,8 +92,10 @@ pub fn main() {
     ]),
     Task(Todo, "get some sleep", []),
   ]
+}
 
-  todo_list
+pub fn main() {
+  example_todo_list()
   |> tasks_to_doc
   |> doc.to_string(10_000)
   |> io.println

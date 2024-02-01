@@ -1,0 +1,16 @@
+---
+version: 1.0.4
+title: json in a small-ish space
+---
+{
+  title: "The sundial",
+  author: "Shirley Jackson",
+  publication_year: 1958.0,
+  read: true,
+  characters: [ "Mrs. Halloran", "Essex", "Captain Scarabombardon" ],
+  average_rating: 5.0,
+  ratings: [
+    { from: "Ben", value: 5.0 },
+    { from: "Giacomo", value: 5.0 }
+  ]
+}

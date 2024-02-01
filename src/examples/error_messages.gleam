@@ -4,29 +4,29 @@ import gleam/list
 import gleam/string
 import glam/doc.{type Document}
 
-type Span {
+pub type Span {
   Span(line: Int, column_start: Int, column_end: Int)
 }
 
-type Error {
+pub type Error {
   Error(code: String, name: String, message: String, span: Span)
 }
 
 /// Turns a list of errors into a Document that nicely display those with
 /// a tooltip that highlights the error source.
-/// 
+///
 /// The text of the error message has to be flexible: fitting as much as
 /// possible on a single line and breaking it when needed in order not to exceed
 /// the terminal's size.
-/// 
+///
 /// The developer who's writing the error messages shouldn't worry about where
 /// the error messages need to be split. Their only concern is dividing the
 /// error text in (possibly) multiple paragraphs. The pretty printer is free to
 /// split words inside paragraphs to fit them on a single line, but it should
 /// never remove a newline where explicitly put by the original error message.
-/// 
+///
 /// ## Examples
-/// 
+///
 /// ```gleam
 /// let source_code =
 ///   "fn greet(message: String) -> Nil {\n  println(\"Hello\" <> message)\n}"
@@ -40,7 +40,7 @@ type Error {
 /// errors_to_doc(source_code, errors)
 /// |> doc.to_string(30)
 /// |> io.println
-/// 
+///
 /// // ->
 /// // [ E001 ]: Unused function
 /// // 1 | fn greet(message: String) -> Nil {
@@ -52,8 +52,8 @@ type Error {
 /// //           public with the
 /// //           `pub` keyword.
 /// ```
-/// 
-fn errors_to_doc(source_code: String, errors: List(Error)) -> Document {
+///
+pub fn errors_to_doc(source_code: String, errors: List(Error)) -> Document {
   list.map(errors, error_to_doc(source_code, _))
   |> doc.join(with: doc.lines(2))
 }
@@ -113,7 +113,7 @@ fn underlined_pointer(length: Int) -> Document {
 /// where each whitespace in the original string is a `doc.flex_space`.
 /// Original newlines are kept so that one can still have control on the
 /// separation between different paragraphs.
-/// 
+///
 fn flexible_text(text: String) -> Document {
   let to_flexible_line = fn(line) {
     string.split(line, on: " ")
@@ -128,10 +128,10 @@ fn flexible_text(text: String) -> Document {
   |> doc.group
 }
 
-pub fn main() {
-  let source_code =
-    "fn greet(message: String) -> Nil {\n  println(\"Hello\" <> message)\n}"
-  let errors = [
+pub const example_source_code = "fn greet(message: String) -> Nil {\n  println(\"Hello\" <> message)\n}"
+
+pub fn example_errors() -> List(Error) {
+  [
     Error(
       "E001",
       "Unused function",
@@ -145,11 +145,13 @@ pub fn main() {
       Span(1, 2, 8),
     ),
   ]
+}
 
-  errors_to_doc(source_code, errors)
+pub fn main() {
+  errors_to_doc(example_source_code, example_errors())
   |> doc.to_string(30)
   |> io.println
-  // Example output: 
+  // Example output:
   //
   // [ E001 ]: Unused function
   // 1 | fn greet(message: String) -> Nil {
@@ -160,7 +162,7 @@ pub fn main() {
   //           remove it or make it
   //           public with the
   //           `pub` keyword.
-  // 
+  //
   // [ E011 ]: Unknown variable
   // 2 |   println("Hello" <> message)
   //       ┬──────

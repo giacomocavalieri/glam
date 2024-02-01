@@ -1,0 +1,21 @@
+---
+version: 1.0.4
+title: error messages in a small space
+---
+[ E001 ]: Unused function
+1 | fn greet(message: String) -> Nil {
+       ┬────
+       ╰─ This function is
+          unused!
+          You can safely
+          remove it or make it
+          public with the
+          `pub` keyword.
+
+[ E011 ]: Unknown variable
+2 |   println("Hello" <> message)
+      ┬──────
+      ╰─ The name `println` is
+         not in scope here.
+         Did you mean to use
+         `io.println`?

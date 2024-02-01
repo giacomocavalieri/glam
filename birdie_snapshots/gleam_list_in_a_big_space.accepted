@@ -1,0 +1,5 @@
+---
+version: 1.0.4
+title: gleam list in a big space
+---
+["Gleam", "is", "fun!"]
