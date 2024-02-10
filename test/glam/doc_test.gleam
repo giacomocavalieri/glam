@@ -216,3 +216,16 @@ pub fn zero_width_string_test() {
   doc.to_string(string_with_break_and_zero_string, 10)
   |> should.equal("doc with zero width")
 }
+
+pub fn zero_width_string_example_test() {
+  [
+    doc.zero_width_string("\u{001b}[1;31m"),
+    doc.from_string("I'm a red"),
+    doc.break(", ", ","),
+    doc.from_string("bold text"),
+  ]
+  |> doc.concat
+  |> doc.group
+  |> doc.to_string(20)
+  |> should.equal("\u{001b}[1;31mI'm a red, bold text")
+}
