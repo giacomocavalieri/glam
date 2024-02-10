@@ -200,3 +200,19 @@ pub fn flex_break_with_group_and_nesting_test() {
   doc.to_string(list, 1)
   |> should.equal("[\n  1,\n  2,\n  3,\n  4,\n  5,\n]")
 }
+
+pub fn zero_width_string_test() {
+  let string_with_break_and_zero_string =
+    [
+      doc.from_string("doc"),
+      doc.break(" ", ""),
+      doc.from_string("with"),
+      doc.break(" ", ""),
+      doc.zero_width_string("zero width"),
+    ]
+    |> doc.concat
+    |> doc.group
+
+  doc.to_string(string_with_break_and_zero_string, 10)
+  |> should.equal("doc with zero width")
+}

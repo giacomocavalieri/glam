@@ -236,6 +236,29 @@ pub fn from_string(string: String) -> Document {
   Text(string, string.length(string))
 }
 
+/// Turns a string into a document, without impacting in the line length in which
+/// the string is used.
+///
+/// This kind of string can be used to render non-visible characters
+/// e.g. ansi color codes
+///
+/// ## Examples
+///
+/// ```gleam
+/// // Should break in two lines, but doesn't because of the zero_width_string
+/// [
+///   zero_width_string("\u{001b}[1;31m"),
+///   from_string("I'm a red"),
+///   break(", ", ","),
+///   from_string("bold text"),
+/// ] |> concat |> group |> to_string(20)
+/// // -> "\u{001b}[1;31mI'm a red, bold text"
+/// ```
+///
+pub fn zero_width_string(string: String) -> Document {
+  Text(string, 0)
+}
+
 /// Allows the pretty printer to break the `break` documents inside the given
 /// group.
 ///
