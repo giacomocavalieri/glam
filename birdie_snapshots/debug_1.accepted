@@ -1,0 +1,34 @@
+---
+version: 1.0.4
+title: debug 1
+---
+[
+  ²⟨
+    "{" . space . "title: \"The sundial\"," . space .
+    "author: \"Shirley Jackson\"," . space . "publication_year: 1958.0," . space .
+    "read: true," . space . "characters: " . 
+    [
+      ²⟨
+        "[" . space . "\"Mrs. Halloran\"" . "," . space . "\"Essex\"" . "," .
+        space . "\"Captain Scarabombardon\""
+      ⟩ . space . "]"
+    ] . 
+    "," . space . "average_rating: 5.0," . space . "ratings: " . 
+    [
+      ²⟨
+        "[" . space . 
+        [
+          ²⟨
+            "{" . space . "from: \"Ben\"," . space . "value: 5.0"
+          ⟩ . space . "}"
+        ] . 
+        "," . space . 
+        [
+          ²⟨
+            "{" . space . "from: \"Giacomo\"," . space . "value: 5.0"
+          ⟩ . space . "}"
+        ]
+      ⟩ . space . "]"
+    ]
+  ⟩ . space . "}"
+]

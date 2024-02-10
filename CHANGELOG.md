@@ -4,6 +4,7 @@
 
 - Remove the `doc.to_string_builder` method.
 - The `doc` module gains the `zero_width_string` function
+- The `doc` module gains the `debug` function
 
 ## v1.3.0 - 2023-01-03
 

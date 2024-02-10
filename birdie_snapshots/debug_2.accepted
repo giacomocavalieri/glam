@@ -1,0 +1,41 @@
+---
+version: 1.0.4
+title: debug 2
+---
+"[ E001 ]: Unused function" . lf . "1 | fn greet(message: String) -> Nil {" .
+⁷⟨
+  lf . "┬────" . lf . "╰─ " .
+  ³⟨
+    [
+      [
+        "This" . flex_space . "function" . flex_space . "is" . flex_space .
+        "unused!"
+      ] . 
+      lf . 
+      [
+        "You" . flex_space . "can" . flex_space . "safely" . flex_space .
+        "remove" . flex_space . "it" . flex_space . "or" . flex_space . "make" .
+        flex_space . "it" . flex_space . "public" . flex_space . "with" .
+        flex_space . "the" . flex_space . "`pub`" . flex_space . "keyword."
+      ]
+    ]
+  ⟩
+⟩ . lf² . "[ E011 ]: Unknown variable" . lf .
+"2 |   println(\"Hello\" <> message)" .
+⁶⟨
+  lf . "┬──────" . lf . "╰─ " .
+  ³⟨
+    [
+      [
+        "The" . flex_space . "name" . flex_space . "`println`" . flex_space .
+        "is" . flex_space . "not" . flex_space . "in" . flex_space . "scope" .
+        flex_space . "here."
+      ] . 
+      lf . 
+      [
+        "Did" . flex_space . "you" . flex_space . "mean" . flex_space . "to" .
+        flex_space . "use" . flex_space . "`io.println`?"
+      ]
+    ]
+  ⟩
+⟩

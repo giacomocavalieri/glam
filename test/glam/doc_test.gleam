@@ -2,6 +2,8 @@ import gleam/list
 import gleam/string
 import gleeunit/should
 import glam/doc
+import examples/json
+import examples/error_messages
 import birdie
 
 pub fn append_test() {
@@ -227,4 +229,22 @@ pub fn zero_width_string_example_test() {
   |> doc.group
   |> doc.to_string(20)
   |> birdie.snap(title: "zero width string 2")
+}
+
+pub fn debug_1_test() {
+  json.example_json()
+  |> json.json_to_doc
+  |> doc.debug
+  |> doc.to_string(80)
+  |> birdie.snap(title: "debug 1")
+}
+
+pub fn debug_2_test() {
+  error_messages.errors_to_doc(
+    error_messages.example_source_code,
+    error_messages.example_errors(),
+  )
+  |> doc.debug
+  |> doc.to_string(80)
+  |> birdie.snap(title: "debug 2")
 }

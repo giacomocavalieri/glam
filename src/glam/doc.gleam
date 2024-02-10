@@ -1,4 +1,6 @@
+import gleam/int
 import gleam/list
+import gleam/order.{Eq, Gt, Lt}
 import gleam/string
 
 /// A document that can be pretty printed with `to_string`.
@@ -619,6 +621,144 @@ fn do_to_string(
           do_to_string(acc <> text, max_width, current_width + length, rest)
       }
   }
+}
+
+// --- DEBUGGING UTILITIES -----------------------------------------------------
+
+const debug_nesting = 2
+
+/// Returns a debug version of the given document that can be pretty printed
+/// to see the structure of a document.
+///
+/// This can help you see how your data structures get turned into documents
+/// and check if the document is what you'd expect.
+///
+/// - `group`s are surrounded by square brackets.
+/// - `nest`s are surrounded by angle brackets and have a smal superscript
+///   with the nesting.
+/// - `concat`enated documents are separated by dots.
+/// - `break`s are rendered surrounded by curly brackets and show both the
+///   broken and unbroken versions.
+/// - `line`s are rendered as the string `lf` followed by a superscript
+///   number of lines.
+///
+pub fn debug(document: Document) -> Document {
+  case document {
+    Text(text, _length) -> {
+      let escaped = string.replace(each: "\"", with: "\\\"", in: text)
+      from_string("\"" <> escaped <> "\"")
+    }
+
+    ForceBreak(doc) -> parenthesise(debug(doc), "force(", ")")
+
+    Group(doc) ->
+      parenthesise(debug(doc), "[", "]")
+      |> force_break
+
+    Nest(doc, indentation) ->
+      parenthesise(debug(doc), superscript_number(indentation) <> "⟨", "⟩")
+      |> force_break
+
+    Break(" ", "") -> from_string("space")
+    Break(unbroken, broken) ->
+      from_string("{ \"" <> unbroken <> "\", \"" <> broken <> "\" }")
+
+    FlexBreak(" ", "") -> from_string("flex_space")
+    FlexBreak(unbroken, broken) ->
+      from_string("flex{ \"" <> unbroken <> "\", \"" <> broken <> "\" }")
+
+    Line(size) ->
+      case int.compare(size, 1) {
+        Lt | Eq -> from_string("lf")
+        Gt -> from_string("lf" <> superscript_number(size))
+      }
+
+    Concat(docs) ->
+      split_groups(flatten(docs))
+      |> list.map(fn(docs) {
+        case docs {
+          [] -> panic as "empty"
+          _ -> Nil
+        }
+        list.map(docs, debug)
+        |> join(with: flex_break(" . ", " ."))
+        |> group
+      })
+      |> join(with: concat([flex_break(" . ", " ."), line]))
+  }
+}
+
+fn parenthesise(document: Document, open: String, close: String) -> Document {
+  [
+    from_string(open),
+    nest(line, by: debug_nesting),
+    nest(document, by: debug_nesting),
+    line,
+    from_string(close),
+  ]
+  |> concat
+  |> group
+}
+
+fn flatten(docs: List(Document)) -> List(Document) {
+  do_flatten(docs, [])
+}
+
+fn do_flatten(docs: List(Document), acc: List(Document)) -> List(Document) {
+  case docs {
+    [] -> list.reverse(acc)
+    [one] -> list.reverse([one, ..acc])
+    [Concat(one), Concat(two), ..rest] ->
+      do_flatten([Concat(list.append(one, two)), ..rest], acc)
+    [Text(one, len_one), Text(two, len_two), ..rest] ->
+      do_flatten([Text(one <> two, len_one + len_two), ..rest], acc)
+    [one, two, ..rest] -> do_flatten([two, ..rest], [one, ..acc])
+  }
+}
+
+fn split_groups(docs: List(Document)) -> List(List(Document)) {
+  do_split_groups(docs, [], [])
+}
+
+fn do_split_groups(
+  docs: List(Document),
+  current_group: List(Document),
+  acc: List(List(Document)),
+) -> List(List(Document)) {
+  case docs {
+    [] ->
+      case current_group {
+        [] -> list.reverse(acc)
+        _ -> list.reverse([list.reverse(current_group), ..acc])
+      }
+
+    [Group(_) as doc, ..rest] ->
+      case current_group {
+        [] -> do_split_groups(rest, [], [[doc], ..acc])
+        _ ->
+          do_split_groups(rest, [], [[doc], list.reverse(current_group), ..acc])
+      }
+    [doc, ..rest] -> do_split_groups(rest, [doc, ..current_group], acc)
+  }
+}
+
+fn superscript_number(number: Int) -> String {
+  let assert Ok(digits) = int.digits(number, 10)
+  use acc, digit <- list.fold(over: digits, from: "")
+  let digit = case digit {
+    0 -> "⁰"
+    1 -> "¹"
+    2 -> "²"
+    3 -> "³"
+    4 -> "⁴"
+    5 -> "⁵"
+    6 -> "⁶"
+    7 -> "⁷"
+    8 -> "⁸"
+    9 -> "⁹"
+    _ -> panic as "not a digit"
+  }
+  acc <> digit
 }
 
 // --- UTILITY FUNCTIONS -------------------------------------------------------
