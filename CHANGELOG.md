@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Remove the `doc.to_string_builder` method.
+- The `doc` module gains the `zero_width_string` function
 
 ## v1.3.0 - 2023-01-03
 

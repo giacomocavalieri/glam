@@ -2,6 +2,7 @@ import gleam/list
 import gleam/string
 import gleeunit/should
 import glam/doc
+import birdie
 
 pub fn append_test() {
   doc.from_string("foo")
@@ -199,4 +200,31 @@ pub fn flex_break_with_group_and_nesting_test() {
 
   doc.to_string(list, 1)
   |> should.equal("[\n  1,\n  2,\n  3,\n  4,\n  5,\n]")
+}
+
+pub fn zero_width_string_test() {
+  [
+    doc.from_string("doc"),
+    doc.break(" ", ""),
+    doc.from_string("with"),
+    doc.break(" ", ""),
+    doc.zero_width_string("zero width"),
+  ]
+  |> doc.concat
+  |> doc.group
+  |> doc.to_string(10)
+  |> birdie.snap(title: "zero width string 1")
+}
+
+pub fn zero_width_string_example_test() {
+  [
+    doc.zero_width_string("\u{001b}[1;31m"),
+    doc.from_string("I'm a red"),
+    doc.break(", ", ","),
+    doc.from_string("bold text"),
+  ]
+  |> doc.concat
+  |> doc.group
+  |> doc.to_string(20)
+  |> birdie.snap(title: "zero width string 2")
 }
