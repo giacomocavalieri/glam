@@ -1,5 +1,5 @@
 name = "glam"
-version = "1.3.0"
+version = "2.0.0"
 description = "A package to help you easily pretty print structured data"
 
 licences = ["Apache-2.0"]
@@ -16,9 +16,9 @@ gleeunit = "~> 1.0"
 
 [documentation]
 pages = [
-  { title = "Learning materials", path = "learning_materials.html", source = "./tutorials/README.md" },
-  { title = "", path = "pretty_printing_glamorous_lists.html", source = "./tutorials/pretty_printing_glamorous_lists.md" },
-  { title = "", path = "pretty_printing_todo_lists.html", source = "./tutorials/pretty_printing_todo_lists.md" },
-  { title = "", path = "pretty_printing_JSON.html", source = "./tutorials/pretty_printing_JSON.md" },
-  { title = "", path = "pretty_printing_lovely_error_messages.html", source = "./tutorials/pretty_printing_lovely_error_messages.md" },
+    { title = "Learning materials", path = "learning_materials.html", source = "./tutorials/README.md" },
+    { title = "", path = "pretty_printing_glamorous_lists.html", source = "./tutorials/pretty_printing_glamorous_lists.md" },
+    { title = "", path = "pretty_printing_todo_lists.html", source = "./tutorials/pretty_printing_todo_lists.md" },
+    { title = "", path = "pretty_printing_JSON.html", source = "./tutorials/pretty_printing_JSON.md" },
+    { title = "", path = "pretty_printing_lovely_error_messages.html", source = "./tutorials/pretty_printing_lovely_error_messages.md" },
 ]
