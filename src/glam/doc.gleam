@@ -594,14 +594,17 @@ fn do_to_string(
               |> do_to_string(max_width, indent, rest)
           }
 
-        ForceBreak(doc) ->
-          [#(indent, ForceBroken, doc), ..rest]
-          |> do_to_string(acc, max_width, current_width, _)
+        ForceBreak(doc) -> {
+          let docs = [#(indent, ForceBroken, doc), ..rest]
+          do_to_string(acc, max_width, current_width, docs)
+        }
 
-        Concat(docs) ->
-          list.map(docs, fn(doc) { #(indent, mode, doc) })
-          |> list.append(rest)
-          |> do_to_string(acc, max_width, current_width, _)
+        Concat(docs) -> {
+          let docs =
+            list.map(docs, fn(doc) { #(indent, mode, doc) })
+            |> list.append(rest)
+          do_to_string(acc, max_width, current_width, docs)
+        }
 
         Group(doc) -> {
           let fits = fits([#(indent, Unbroken, doc)], max_width, current_width)
@@ -609,13 +612,14 @@ fn do_to_string(
             True -> Unbroken
             False -> Broken
           }
-          [#(indent, new_mode, doc), ..rest]
-          |> do_to_string(acc, max_width, current_width, _)
+          let docs = [#(indent, new_mode, doc), ..rest]
+          do_to_string(acc, max_width, current_width, docs)
         }
 
-        Nest(doc, i) ->
-          [#(indent + i, mode, doc), ..rest]
-          |> do_to_string(acc, max_width, current_width, _)
+        Nest(doc, i) -> {
+          let docs = [#(indent + i, mode, doc), ..rest]
+          do_to_string(acc, max_width, current_width, docs)
+        }
 
         Text(text: text, length: length) ->
           do_to_string(acc <> text, max_width, current_width + length, rest)
