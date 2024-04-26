@@ -1,9 +1,10 @@
 # Changelog
 
-## Unreleased
+## v2.0.1 - 2024-04-26
 
 - Move `birdie` to dev dependencies
 - Remove deprecated `list.at` from examples
+- Improve docs for `doc.to_string`
 
 ## v2.0.0 - 2024-02-10
 
