@@ -479,7 +479,9 @@ pub const soft_break: Document = Break("", "")
 ///
 pub const space: Document = Break(" ", "")
 
-/// Turns a document into a pretty printed string.
+/// Turns a document into a pretty printed string, trying to fit it into lines
+/// of maximum size specified by `limit`.
+///
 /// The pretty printed process can be thought of as follows:
 /// - the pretty printer first tries to print every group on a single line
 /// - all the `break` documents are rendered as their first argument
@@ -502,8 +504,8 @@ pub const space: Document = Break(" ", "")
 /// that will guide you through the implementation of a simple pretty printer,
 /// covering most of the Glam API.
 ///
-pub fn to_string(doc: Document, width: Int) -> String {
-  do_to_string("", width, 0, [#(0, Unbroken, doc)])
+pub fn to_string(doc: Document, limit: Int) -> String {
+  do_to_string("", limit, 0, [#(0, Unbroken, doc)])
 }
 
 type Mode {
