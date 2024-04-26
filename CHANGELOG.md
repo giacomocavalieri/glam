@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Move `birdie` to dev dependencies
+- Remove deprecated `list.at` from examples
+
 ## v2.0.0 - 2024-02-10
 
 - Remove the `doc.to_string_builder` method.

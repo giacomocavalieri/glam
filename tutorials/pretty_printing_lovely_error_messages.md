@@ -79,6 +79,12 @@ error message with a longer description:
 let source_code = "fn greet(message: String) -> Nil {
   println(\"Hello\" <> message)
 }"
+  |> string.split(on: "\n")
+  |> list.index_map(fn(line, i) { #(i, line) })
+  // We split the source code into lines and make a dict to go from line number
+  // to the actual line, our pretty printer will need this later.
+  |> dict.from_list
+
 let message = "This function is unused!
 You can safely remove it or make it public with the `pub` keyword."
 let unused_function = Error("E001", "Unused function", message, Span(0, 3, 7))
@@ -360,10 +366,10 @@ That also makes things easier for us, we just have to prefix the line with its
 number and we can call it a day:
 
 ```gleam
-fn line_doc(source_code: String, line_number: Int) -> Document {
-  let source_code_lines = string.split(source_code, on: "\n")
-  let assert Ok(line) = list.at(source_code_lines, line_number)
-  doc.from_string(line_prefix(line_number) <> line)
+fn line_doc(source_code: Dict(Int, String), line_number: Int) -> Document {
+  let assert Ok(line) = dict.get(source_code, line_number)
+  let prefix = line_prefix(line_number)
+  doc.from_string(prefix <> line)
 }
 
 fn line_prefix(line_number: Int) -> String {
@@ -408,7 +414,7 @@ and pieces needed by the final error message. Now it's time to put everything
 together! Our final function's type should turn an `Error` into a `Document`:
 
 ```gleam
-fn error_to_doc(source_code: String, error: Error) -> Document {
+fn error_to_doc(source_code: Dict(Int, String), error: Error) -> Document {
   todo as "let's put everything together!"
 }
 ```
@@ -416,7 +422,7 @@ fn error_to_doc(source_code: String, error: Error) -> Document {
 First we'll just `doc.concat` every single document and then start tweaking from there:
 
 ```gleam
-fn error_to_doc(source_code: String, error: Error) -> Document {
+fn error_to_doc(source_code: Dict(Int, String), error: Error) -> Document {
   let underline_size = error.span.column_end - error.span.column_start + 1
 
   [
@@ -441,7 +447,7 @@ error_to_doc(source_code, unknown_variable)
 // [ E011 ]: Unknown variable
 // 2 |   println("Hello" <> message)
 // ┬──────
-// ╰─ 
+// ╰─
 // The name `println` is not in
 // scope here.
 // Did you mean to use
@@ -509,7 +515,7 @@ message_doc("a long error message that is going to be wrapped", 3)
 We can now update `error_to_doc` to use this function:
 
 ```gleam
-fn error_to_doc(source_code: String, error: Error) -> Document {
+fn error_to_doc(source_code: Dict(Int, String), error: Error) -> Document {
   let underline_size = error.span.column_end - error.span.column_start + 1
 
   [
@@ -546,9 +552,11 @@ We can achieve this by making a little change to the `line_doc` function to
 make it returns the size of the added prefix as well:
 
 ```gleam
-fn line_doc(source_code: String, line_number: Int) -> #(Document, Int) {
-  let source_code_lines = string.split(source_code, on: "\n")
-  let assert Ok(line) = list.at(source_code_lines, line_number)
+fn line_doc(
+  source_code: Dict(Int, String),
+  line_number: Int
+) -> #(Document, Int) {
+  let assert Ok(line) = dict.get(source_code, line_number)
   let prefix = line_prefix(line_number)
   let prefix_size = string.length(prefix)
   #(doc.from_string(prefix <> line), prefix_size)
@@ -560,7 +568,7 @@ fn line_doc(source_code: String, line_number: Int) -> #(Document, Int) {
 With this we can complete the `error_to_doc` function:
 
 ```gleam
-fn error_to_doc(source_code: String, error: Error) -> Document {
+fn error_to_doc(source_code: Dict(Int, String), error: Error) -> Document {
   let underline_size = error.span.column_end - error.span.column_start + 1
   let #(line_doc, prefix_size) = line_doc(source_code, error.span.line)
   let message_indentation = error.span.column_start + prefix_size
@@ -585,9 +593,12 @@ Before closing this tutorial, let's take one last step back to get an overall
 view of the code we wrote:
 
 ```gleam
-fn error_to_doc(source_code: String, error: Error) -> Document
+fn error_to_doc(source_code: Dict(Int, String), error: Error) -> Document
 fn header_doc(code: String, name: String) -> Document
-fn line_doc(source_code: String, line_number: Int) -> #(Document, Int)
+fn line_doc(
+  source_code: Dict(Int, String),
+  line_number: Int
+) -> #(Document, Int)
 fn message_doc(message: String, length: Int) -> Document
 fn underlined_pointer(length: Int) -> Document
 ```

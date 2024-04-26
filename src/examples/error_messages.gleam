@@ -1,8 +1,9 @@
+import glam/doc.{type Document}
+import gleam/dict.{type Dict}
 import gleam/int
 import gleam/io
 import gleam/list
 import gleam/string
-import glam/doc.{type Document}
 
 pub type Span {
   Span(line: Int, column_start: Int, column_end: Int)
@@ -54,11 +55,16 @@ pub type Error {
 /// ```
 ///
 pub fn errors_to_doc(source_code: String, errors: List(Error)) -> Document {
+  let source_code =
+    string.split(source_code, on: "\n")
+    |> list.index_map(fn(line, i) { #(i, line) })
+    |> dict.from_list
+
   list.map(errors, error_to_doc(source_code, _))
   |> doc.join(with: doc.lines(2))
 }
 
-fn error_to_doc(source_code: String, error: Error) -> Document {
+fn error_to_doc(source_code: Dict(Int, String), error: Error) -> Document {
   let underline_size = error.span.column_end - error.span.column_start + 1
   let #(line_doc, prefix_size) = line_doc(source_code, error.span.line)
 
@@ -67,8 +73,8 @@ fn error_to_doc(source_code: String, error: Error) -> Document {
     doc.line,
     line_doc,
     [doc.line, message_doc(error.message, underline_size)]
-    |> doc.concat
-    |> doc.nest(by: error.span.column_start + prefix_size),
+      |> doc.concat
+      |> doc.nest(by: error.span.column_start + prefix_size),
   ]
   |> doc.concat
 }
@@ -79,9 +85,11 @@ fn header_doc(code: String, name: String) -> Document {
   |> doc.from_string
 }
 
-fn line_doc(source_code: String, line_number: Int) -> #(Document, Int) {
-  let source_code_lines = string.split(source_code, on: "\n")
-  let assert Ok(line) = list.at(source_code_lines, line_number)
+fn line_doc(
+  source_code: Dict(Int, String),
+  line_number: Int,
+) -> #(Document, Int) {
+  let assert Ok(line) = dict.get(source_code, line_number)
   let prefix = line_prefix(line_number)
   let prefix_size = string.length(prefix)
   #(doc.from_string(prefix <> line), prefix_size)
@@ -95,7 +103,7 @@ fn message_doc(message: String, length: Int) -> Document {
   [
     underlined_pointer(length),
     flexible_text(message)
-    |> doc.nest(by: 3),
+      |> doc.nest(by: 3),
   ]
   |> doc.concat
 }
