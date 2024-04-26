@@ -1,10 +1,10 @@
+import birdie
+import examples/error_messages
+import examples/json
+import glam/doc
 import gleam/list
 import gleam/string
 import gleeunit/should
-import glam/doc
-import examples/json
-import examples/error_messages
-import birdie
 
 pub fn append_test() {
   doc.from_string("foo")

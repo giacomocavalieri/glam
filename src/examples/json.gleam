@@ -1,10 +1,10 @@
+import glam/doc.{type Document}
 import gleam/bool
 import gleam/float
 import gleam/int
 import gleam/io
 import gleam/list
 import gleam/string
-import glam/doc.{type Document}
 
 pub type JSON {
   String(String)

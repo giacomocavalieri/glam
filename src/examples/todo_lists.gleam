@@ -1,6 +1,6 @@
+import glam/doc.{type Document}
 import gleam/io
 import gleam/list
-import glam/doc.{type Document}
 
 pub type TodoList =
   List(Task)
