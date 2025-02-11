@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.0.2 - 2025-02-11
+
+- Move the examples folder out of the project's `src` directory into `test`
+
 ## v2.0.1 - 2024-04-26
 
 - Move `birdie` to dev dependencies
@@ -8,7 +12,7 @@
 
 ## v2.0.0 - 2024-02-10
 
-- Remove the `doc.to_string_builder` method.
+- Remove the `doc.to_string_builder` method
 - The `doc` module gains the `zero_width_string` function
 - The `doc` module gains the `debug` function
 
