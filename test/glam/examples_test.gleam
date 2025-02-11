@@ -1,9 +1,9 @@
 import birdie
-import examples/error_messages
-import examples/gleam_lists
-import examples/json
-import examples/todo_lists
 import glam/doc
+import glam/examples/error_messages
+import glam/examples/gleam_lists
+import glam/examples/json
+import glam/examples/todo_lists
 
 pub fn error_messages_in_a_small_space_test() {
   error_messages.errors_to_doc(

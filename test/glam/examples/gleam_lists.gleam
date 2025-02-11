@@ -10,7 +10,7 @@ import gleam/string
 /// - if the list does not fit on one line each one of its items should be on
 ///   a newline and indented
 ///
-/// ## Examples
+/// ## Examples
 ///
 /// ```
 /// let list = ["Gleam", "is", "fun!"] |> pretty_list

@@ -1,7 +1,7 @@
 import birdie
-import examples/error_messages
-import examples/json
 import glam/doc
+import glam/examples/error_messages
+import glam/examples/json
 import gleam/list
 import gleam/string
 import gleeunit/should
@@ -22,11 +22,7 @@ pub fn append_docs_test() {
 
 pub fn break_test() {
   let message =
-    [
-      doc.from_string("pretty"),
-      doc.break("•", "↩"),
-      doc.from_string("printed"),
-    ]
+    [doc.from_string("pretty"), doc.break("•", "↩"), doc.from_string("printed")]
     |> doc.concat
     |> doc.group
 
@@ -58,11 +54,7 @@ pub fn concat_join_test() {
 }
 
 pub fn force_break_test() {
-  [
-    doc.from_string("pretty"),
-    doc.break("•", "↩"),
-    doc.from_string("printed"),
-  ]
+  [doc.from_string("pretty"), doc.break("•", "↩"), doc.from_string("printed")]
   |> doc.concat
   |> doc.force_break
   |> doc.group

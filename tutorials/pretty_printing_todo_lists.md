@@ -123,7 +123,7 @@ Now we're ready to turn a task into a document:
 fn task_to_doc(task: Task) -> Document {
   let task_line = status_to_bullet(task.status) <> " " <> task.description
   let task_doc = doc.from_string(task_line)
-  
+
   todo as "Bear with me a little longer..."
 }
 ```
@@ -207,7 +207,7 @@ This function takes a document as input and forces the pretty printer to break
 the `doc.break` it is made of:
 
 ```gleam
-let example = 
+let example =
   ["first", "second"]
   |> list.map(doc.from_string)
   |> doc.join(with: doc.space)
@@ -336,7 +336,7 @@ but we got quite a nice value out of it:
   nest arbitrarily deep data structures
 
 If you want to take a look at the full implementation code, you can find it
-[here](https://github.com/giacomocavalieri/glam/blob/main/src/examples/todo_lists.gleam).
+[here](https://github.com/giacomocavalieri/glam/blob/main/test/glam/examples/todo_lists.gleam).
 
 ## What to do next?
 

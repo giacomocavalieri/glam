@@ -49,13 +49,13 @@ pretty_list(["Gleam", "is", "fun!"])
 
 // [
 //   "Gleam",
-//   "is",   
-//   "fun!",   
+//   "is",
+//   "fun!",
 // ]
 ```
 
 You can also have a look at the
-[`examples`](https://github.com/giacomocavalieri/glam/tree/main/src/examples)
+[`examples`](https://github.com/giacomocavalieri/glam/tree/main/test/glam/examples)
 folder in the GitHub repo, there you'll also find a JSON pretty printer.
 
 ## Contributing

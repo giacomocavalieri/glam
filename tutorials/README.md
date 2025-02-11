@@ -50,7 +50,7 @@ I suggest you work through the tutorials in this order:
 
 If step-by-step tutorials are not your thing, you can still have a look at the
 full code examples in the
-[project repository](https://github.com/giacomocavalieri/glam/tree/main/src/examples).
+[project repository](https://github.com/giacomocavalieri/glam/tree/main/test/glam/examples).
 
 ## Package API
 

@@ -4,7 +4,6 @@ description = "A package to help you easily pretty print structured data"
 
 licences = ["Apache-2.0"]
 repository = { type = "github", user = "giacomocavalieri", repo = "glam" }
-internal_modules = ["examples", "examples/*"]
 gleam = ">= 0.33.0"
 
 [dependencies]
