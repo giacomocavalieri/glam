@@ -1,5 +1,5 @@
 name = "glam"
-version = "2.0.1"
+version = "2.0.2"
 description = "A package to help you easily pretty print structured data"
 
 licences = ["Apache-2.0"]
