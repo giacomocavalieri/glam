@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Remove use of deprecated `int.digits` from `gleam_stdlib`
+
 ## v2.0.2 - 2025-02-11
 
 - Move the examples folder out of the project's `src` directory into `test`

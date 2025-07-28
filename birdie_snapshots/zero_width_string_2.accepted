@@ -1,5 +1,7 @@
 ---
-version: 1.0.4
+version: 1.3.2
 title: zero width string 2
+file: ./test/glam/doc_test.gleam
+test_name: zero_width_string_example_test
 ---
 [1;31mI'm a red, bold text

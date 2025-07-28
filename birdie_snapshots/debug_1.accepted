@@ -1,6 +1,8 @@
 ---
-version: 1.0.4
+version: 1.3.2
 title: debug 1
+file: ./test/glam/doc_test.gleam
+test_name: debug_1_test
 ---
 [
   ²⟨

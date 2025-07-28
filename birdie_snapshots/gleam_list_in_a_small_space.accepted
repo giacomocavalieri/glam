@@ -1,6 +1,8 @@
 ---
-version: 1.0.4
+version: 1.3.2
 title: gleam list in a small space
+file: ./test/glam/examples_test.gleam
+test_name: gleam_list_in_a_small_space_test
 ---
 [
   "Gleam",

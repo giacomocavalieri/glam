@@ -1,0 +1,9 @@
+---
+version: 1.3.2
+title: debug deep nesting of 123123 spaces
+file: ./test/glam/doc_test.gleam
+test_name: debug_deep_nesting_of_123123_spaces_test
+---
+¹²³¹²³⟨
+  "a"
+⟩

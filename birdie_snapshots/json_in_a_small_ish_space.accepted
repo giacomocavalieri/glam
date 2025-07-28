@@ -1,6 +1,8 @@
 ---
-version: 1.0.4
+version: 1.3.2
 title: json in a small-ish space
+file: ./test/glam/examples_test.gleam
+test_name: json_in_a_smallish_space_test
 ---
 {
   title: "The sundial",

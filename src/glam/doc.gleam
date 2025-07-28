@@ -749,7 +749,7 @@ fn do_split_groups(
 }
 
 fn superscript_number(number: Int) -> String {
-  let assert Ok(digits) = int.digits(number, 10)
+  let digits = digits(number)
   use acc, digit <- list.fold(over: digits, from: "")
   let digit = case digit {
     0 -> "⁰"
@@ -765,6 +765,17 @@ fn superscript_number(number: Int) -> String {
     _ -> panic as "not a digit"
   }
   acc <> digit
+}
+
+fn digits(number: Int) -> List(Int) {
+  digits_loop(int.absolute_value(number), [])
+}
+
+fn digits_loop(number: Int, digits: List(Int)) -> List(Int) {
+  case number < 10 {
+    True -> [number, ..digits]
+    False -> digits_loop(number / 10, [number % 10, ..digits])
+  }
 }
 
 // --- UTILITY FUNCTIONS -------------------------------------------------------

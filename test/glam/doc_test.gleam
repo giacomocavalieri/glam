@@ -240,3 +240,11 @@ pub fn debug_2_test() {
   |> doc.to_string(80)
   |> birdie.snap(title: "debug 2")
 }
+
+pub fn debug_deep_nesting_of_123123_spaces_test() {
+  doc.from_string("a")
+  |> doc.nest(by: 123_123)
+  |> doc.debug
+  |> doc.to_string(80)
+  |> birdie.snap(title: "debug deep nesting of 123123 spaces")
+}

@@ -1,6 +1,8 @@
 ---
-version: 1.0.4
+version: 1.3.2
 title: error messages in a big space
+file: ./test/glam/examples_test.gleam
+test_name: error_messages_in_a_big_space_test
 ---
 [ E001 ]: Unused function
 1 | fn greet(message: String) -> Nil {
