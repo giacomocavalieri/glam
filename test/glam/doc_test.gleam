@@ -4,20 +4,19 @@ import glam/examples/error_messages
 import glam/examples/json
 import gleam/list
 import gleam/string
-import gleeunit/should
 
 pub fn append_test() {
-  doc.from_string("foo")
-  |> doc.append(doc.from_string("bar"))
-  |> doc.to_string(80)
-  |> should.equal("foobar")
+  assert "foobar"
+    == doc.from_string("foo")
+    |> doc.append(doc.from_string("bar"))
+    |> doc.to_string(80)
 }
 
 pub fn append_docs_test() {
-  doc.from_string("foo")
-  |> doc.append_docs([doc.from_string("bar"), doc.from_string("baz")])
-  |> doc.to_string(80)
-  |> should.equal("foobarbaz")
+  assert "foobarbaz"
+    == doc.from_string("foo")
+    |> doc.append_docs([doc.from_string("bar"), doc.from_string("baz")])
+    |> doc.to_string(80)
 }
 
 pub fn break_test() {
@@ -26,21 +25,16 @@ pub fn break_test() {
     |> doc.concat
     |> doc.group
 
-  message
-  |> doc.to_string(20)
-  |> should.equal("pretty•printed")
-
-  message
-  |> doc.to_string(10)
-  |> should.equal("pretty↩\nprinted")
+  assert "pretty•printed" == doc.to_string(message, 20)
+  assert "pretty↩\nprinted" == doc.to_string(message, 10)
 }
 
 pub fn concat_test() {
-  ["pretty", " ", "printed"]
-  |> list.map(doc.from_string)
-  |> doc.concat
-  |> doc.to_string(80)
-  |> should.equal("pretty printed")
+  assert "pretty printed"
+    == ["pretty", " ", "printed"]
+    |> list.map(doc.from_string)
+    |> doc.concat
+    |> doc.to_string(80)
 }
 
 pub fn concat_join_test() {
@@ -49,17 +43,21 @@ pub fn concat_join_test() {
     ["wow", "so", "many", "commas"]
     |> list.map(doc.from_string)
 
-  doc.concat_join(docs, separators)
-  |> should.equal(doc.join(docs, doc.concat(separators)))
+  assert doc.join(docs, doc.concat(separators))
+    == doc.concat_join(docs, separators)
 }
 
 pub fn force_break_test() {
-  [doc.from_string("pretty"), doc.break("•", "↩"), doc.from_string("printed")]
-  |> doc.concat
-  |> doc.force_break
-  |> doc.group
-  |> doc.to_string(100)
-  |> should.equal("pretty↩\nprinted")
+  assert "pretty↩\nprinted"
+    == [
+      doc.from_string("pretty"),
+      doc.break("•", "↩"),
+      doc.from_string("printed"),
+    ]
+    |> doc.concat
+    |> doc.force_break
+    |> doc.group
+    |> doc.to_string(100)
 }
 
 pub fn group_test() {
@@ -74,12 +72,9 @@ pub fn group_test() {
     |> doc.concat
     |> doc.group
 
-  doc.to_string(message, 80)
-  |> should.equal("Food I love: lasagna ravioli pizza")
-  doc.to_string(message, 30)
-  |> should.equal("Food I love:\nlasagna ravioli pizza")
-  doc.to_string(message, 20)
-  |> should.equal("Food I love:\nlasagna\nravioli\npizza")
+  assert "Food I love: lasagna ravioli pizza" == doc.to_string(message, 80)
+  assert "Food I love:\nlasagna ravioli pizza" == doc.to_string(message, 30)
+  assert "Food I love:\nlasagna\nravioli\npizza" == doc.to_string(message, 20)
 }
 
 pub fn join_test() {
@@ -88,15 +83,12 @@ pub fn join_test() {
     |> list.map(doc.from_string)
     |> doc.join(with: doc.space)
 
-  doc.to_string(message, 80)
-  |> should.equal("Gleam is fun!")
+  assert "Gleam is fun!" == doc.to_string(message, 80)
 }
 
 pub fn lines_test() {
   use n <- list.each([-1, 0, 1, 10])
-  doc.lines(n)
-  |> doc.to_string(10)
-  |> should.equal(string.repeat("\n", n))
+  assert string.repeat("\n", n) == doc.to_string(doc.lines(n), 10)
 }
 
 pub fn nest_test() {
@@ -120,48 +112,47 @@ pub fn nest_test() {
     |> doc.concat
     |> doc.group
 
-  doc.to_string(list, 10)
-  |> should.equal("list:\n one\n  two\n   three")
+  assert "list:\n one\n  two\n   three" == doc.to_string(list, 10)
 }
 
 pub fn nest_docs_test() {
-  [doc.from_string("one"), doc.space, doc.from_string("two")]
-  |> doc.nest_docs(by: 2)
-  |> doc.append(doc.space)
-  |> doc.append(doc.from_string("three"))
-  |> doc.group
-  |> doc.to_string(5)
-  |> should.equal("one\n  two\nthree")
+  assert "one\n  two\nthree"
+    == [doc.from_string("one"), doc.space, doc.from_string("two")]
+    |> doc.nest_docs(by: 2)
+    |> doc.append(doc.space)
+    |> doc.append(doc.from_string("three"))
+    |> doc.group
+    |> doc.to_string(5)
 }
 
 pub fn prepend_test() {
-  doc.from_string("printed!")
-  |> doc.prepend(doc.from_string("pretty "))
-  |> doc.to_string(80)
-  |> should.equal("pretty printed!")
+  assert "pretty printed!"
+    == doc.from_string("printed!")
+    |> doc.prepend(doc.from_string("pretty "))
+    |> doc.to_string(80)
 }
 
 pub fn prepend_docs_test() {
-  doc.from_string("fun!")
-  |> doc.prepend_docs([doc.from_string("Gleam "), doc.from_string("is ")])
-  |> doc.to_string(80)
-  |> should.equal("Gleam is fun!")
+  assert "Gleam is fun!"
+    == doc.from_string("fun!")
+    |> doc.prepend_docs([doc.from_string("Gleam "), doc.from_string("is ")])
+    |> doc.to_string(80)
 }
 
 pub fn flex_break_test() {
-  ["1", "2", "3", "4", "5", "6"]
-  |> list.map(doc.from_string)
-  |> doc.join(with: doc.flex_break("", ""))
-  |> doc.group
-  |> doc.to_string(4)
-  |> should.equal("1234\n56")
+  assert "1234\n56"
+    == ["1", "2", "3", "4", "5", "6"]
+    |> list.map(doc.from_string)
+    |> doc.join(with: doc.flex_break("", ""))
+    |> doc.group
+    |> doc.to_string(4)
 
-  ["Gleam", "is", "really", "fun!"]
-  |> list.map(doc.from_string)
-  |> doc.join(with: doc.flex_space)
-  |> doc.group
-  |> doc.to_string(8)
-  |> should.equal("Gleam is\nreally\nfun!")
+  assert "Gleam is\nreally\nfun!"
+    == ["Gleam", "is", "really", "fun!"]
+    |> list.map(doc.from_string)
+    |> doc.join(with: doc.flex_space)
+    |> doc.group
+    |> doc.to_string(8)
 }
 
 pub fn flex_break_with_group_and_nesting_test() {
@@ -183,17 +174,10 @@ pub fn flex_break_with_group_and_nesting_test() {
     |> doc.concat
     |> doc.group
 
-  doc.to_string(list, 15)
-  |> should.equal("[1, 2, 3, 4, 5]")
-
-  doc.to_string(list, 13)
-  |> should.equal("[\n  1, 2, 3, 4,\n  5,\n]")
-
-  doc.to_string(list, 10)
-  |> should.equal("[\n  1, 2, 3,\n  4, 5,\n]")
-
-  doc.to_string(list, 1)
-  |> should.equal("[\n  1,\n  2,\n  3,\n  4,\n  5,\n]")
+  assert "[1, 2, 3, 4, 5]" == doc.to_string(list, 15)
+  assert "[\n  1, 2, 3, 4,\n  5,\n]" == doc.to_string(list, 13)
+  assert "[\n  1, 2, 3,\n  4, 5,\n]" == doc.to_string(list, 10)
+  assert "[\n  1,\n  2,\n  3,\n  4,\n  5,\n]" == doc.to_string(list, 1)
 }
 
 pub fn zero_width_string_test() {
