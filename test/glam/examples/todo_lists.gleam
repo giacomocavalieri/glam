@@ -25,32 +25,32 @@ pub type Status {
 ///
 /// ```gleam
 /// [
-///   Task(Todo, "foo", []),
-///   Task(InProgress, "bar", []),
-///   Task(Done, "baz", []),
+///   Task(Todo, "wibble", []),
+///   Task(InProgress, "wobble", []),
+///   Task(Done, "woo", []),
 /// ]
 /// |> tasks_to_doc
 /// |> doc.to_string(10_000)
 /// // ->
-/// // - [ ] foo
-/// // - […] bar
-/// // - [X] baz
+/// // - [ ] wibble
+/// // - […] wobble
+/// // - [X] woo
 /// ```
 ///
 /// ```gleam
 /// [
-///   Task(InProgress, "foo", [
-///     Task(Done, "bar", [
-///       Task(Todo, "baz", [])
+///   Task(InProgress, "wibble", [
+///     Task(Done, "wobble", [
+///       Task(Todo, "woo", [])
 ///     ])
 ///   ]),
 /// ]
 /// |> tasks_to_doc
 /// |> doc.to_string(10_000)
 /// // ->
-/// // - […] foo
-/// //   - [X] bar
-/// //     - [ ] baz
+/// // - […] wibble
+/// //   - [X] wobble
+/// //     - [ ] woo
 /// ```
 ///
 pub fn tasks_to_doc(tasks: TodoList) -> Document {

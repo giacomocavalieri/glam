@@ -6,16 +6,16 @@ import gleam/list
 import gleam/string
 
 pub fn append_test() {
-  assert "foobar"
-    == doc.from_string("foo")
-    |> doc.append(doc.from_string("bar"))
+  assert "wibblewobble"
+    == doc.from_string("wibble")
+    |> doc.append(doc.from_string("wobble"))
     |> doc.to_string(80)
 }
 
 pub fn append_docs_test() {
-  assert "foobarbaz"
-    == doc.from_string("foo")
-    |> doc.append_docs([doc.from_string("bar"), doc.from_string("baz")])
+  assert "wibblewobblewoo"
+    == doc.from_string("wibble")
+    |> doc.append_docs([doc.from_string("wobble"), doc.from_string("woo")])
     |> doc.to_string(80)
 }
 
