@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v2.0.3 - 2025-07-29
 
 - Remove use of deprecated `int.digits` from `gleam_stdlib`
 
