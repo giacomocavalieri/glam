@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.0.4 - 2026-04-20
+
+- Loosen the `gleam_stdlib` constraint to allow using this package with versions
+  `>= 1.0.0`
+
 ## v2.0.3 - 2025-07-29
 
 - Remove use of deprecated `int.digits` from `gleam_stdlib`
