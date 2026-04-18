@@ -6,7 +6,7 @@ licences = ["Apache-2.0"]
 repository = { type = "github", user = "giacomocavalieri", repo = "glam" }
 
 [dependencies]
-gleam_stdlib = ">= 0.62.0 and < 1.0.0"
+gleam_stdlib = ">= 1.0.0 and < 2.0.0"
 
 [dev-dependencies]
 gleeunit = ">= 1.6.1 and < 2.0.0"
